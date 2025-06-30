@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful | SalticsX</title>
+  <link rel="stylesheet" href="../../assets/css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="payment-status-icon success">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <h2>Payment Successful</h2>
+        <p id="paymentStatus">Your payment has been processed successfully</p>
+      </div>
+      
+      <div class="payment-details">
+        <div class="detail-item">
+          <span>Amount:</span>
+          <strong id="paymentAmount">$1,250.00</strong>
+        </div>
+        <div class="detail-item">
+          <span>Date:</span>
+          <strong id="paymentDate">June 15, 2023 14:30</strong>
+        </div>
+        <div class="detail-item">
+          <span>Payment Method:</span>
+          <strong>PayPal</strong>
+        </div>
+        <div class="detail-item">
+          <span>Status:</span>
+          <strong class="status-success">Completed</strong>
+        </div>
+      </div>
+      
+      <div class="auth-footer">
+        <a href="../../dashboard.html" class="btn btn-primary btn-block">Go to Dashboard</a>
+        <p>Need help? <a href="../../contact.html">Contact support</a></p>
+      </div>
+    </div>
+  </div>
+  
+  <script src="../../assets/js/payment.js"></script>
+  <style>
+    .payment-status-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      margin: 0 auto 20px;
+    }
+    
+    .payment-status-icon.success {
+      background: rgba(0, 184, 148, 0.1);
+      color: var(--success);
+    }
+    
+    .payment-details {
+      margin: 30px 0;
+    }
+    
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .status-success {
+      color: var(--success);
+    }
+  </style>
+</body>
+</html>

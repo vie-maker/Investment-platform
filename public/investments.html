@@ -1,0 +1,1372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Investment Plans | SalticsX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            secondary: {
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            },
+            dark: {
+              800: '#1e293b',
+              900: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=USD"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .header-gradient {
+      background: linear-gradient(135deg, #14532d 0%, #0f172a 100%);
+    }
+    .plan-card {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+    }
+    .plan-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    .vip-card {
+      background: linear-gradient(135deg, #166534 0%, #0f172a 100%);
+      color: white;
+    }
+    .elite-card {
+      background: linear-gradient(135deg, #ca8a04 0%, #7c3aed 100%);
+      color: white;
+    }
+    .popular-badge {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: #eab308;
+      color: #14532d;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .nav-link {
+      position: relative;
+    }
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #22c55e;
+      transition: width 0.3s;
+    }
+    .nav-link:hover:after {
+      width: 100%;
+    }
+    .active-nav:after {
+      width: 100%;
+    }
+    .stat-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .gold-text {
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      background-image: linear-gradient(to right, #facc15, #ca8a04);
+    }
+    .investment-status {
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    .status-active {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .status-completed {
+      background-color: #e0f2fe;
+      color: #0369a1;
+    }
+    .profit-display {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #16a34a;
+    }
+    .countdown {
+      font-family: monospace;
+    }
+    #paypal-button-container {
+      margin-top: 20px;
+    }
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 4px;
+      color: white;
+      z-index: 1000;
+      animation: slideIn 0.3s, fadeOut 0.5s 2.5s forwards;
+    }
+    .toast.success {
+      background-color: #22c55e;
+    }
+    .toast.error {
+      background-color: #ef4444;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(100%); }
+      to { transform: translateX(0); }
+    }
+    @keyframes fadeOut {
+      from { opacity: 1; }
+      to { opacity: 0; }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen">
+  <!-- Header -->
+  <header class="header-gradient shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <nav class="flex items-center justify-between">
+        <a href="index.html" class="flex items-center text-xl font-bold text-white">
+          <i class="fas fa-chart-line text-green-400 mr-2"></i>
+          <span>SalticsX</span>
+        </a>
+        <ul class="hidden md:flex items-center space-x-8">
+          <li><a href="index.html" class="nav-link text-gray-300 hover:text-white transition">Home</a></li>
+          <li><a href="investment_plan.html" class="nav-link active-nav text-white font-medium">Investments</a></li>
+          <li><a href="dashboard.html" class="nav-link text-gray-300 hover:text-white transition">Dashboard</a></li>
+          <li><a href="about.html" class="nav-link text-gray-300 hover:text-white transition">About</a></li>
+          <li id="loginLink"><a href="login.html" class="nav-link text-gray-300 hover:text-white transition">Login</a></li>
+          <li id="userDropdown" class="hidden relative">
+            <button class="flex items-center text-gray-300 hover:text-white">
+              <span id="usernameDisplay">User</span>
+              <i class="fas fa-chevron-down ml-2 text-sm"></i>
+            </button>
+            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 hidden">
+              <a href="dashboard.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard</a>
+              <a href="profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profile</a>
+              <button id="logoutBtn" class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</button>
+            </div>
+          </li>
+          <li><a href="register.html" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-medium transition">Get Started</a></li>
+        </ul>
+        <button class="md:hidden text-gray-300" id="mobileMenuButton">
+          <i class="fas fa-bars text-xl"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="hidden md:hidden bg-dark-900 text-white p-4">
+    <ul class="space-y-4">
+      <li><a href="index.html" class="block py-2">Home</a></li>
+      <li><a href="investment_plan.html" class="block py-2 font-medium text-green-400">Investments</a></li>
+      <li><a href="dashboard.html" class="block py-2">Dashboard</a></li>
+      <li><a href="about.html" class="block py-2">About</a></li>
+      <li id="mobileLoginLink"><a href="login.html" class="block py-2">Login</a></li>
+      <li id="mobileUserMenu" class="hidden">
+        <div class="py-2">
+          <span id="mobileUsernameDisplay" class="font-medium"></span>
+          <div class="mt-2 space-y-2">
+            <a href="dashboard.html" class="block py-1">Dashboard</a>
+            <a href="profile.html" class="block py-1">Profile</a>
+            <button id="mobileLogoutBtn" class="text-left py-1">Logout</button>
+          </div>
+        </div>
+      </li>
+      <li><a href="register.html" class="block bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md font-medium transition mt-2">Get Started</a></li>
+    </ul>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="header-gradient text-white py-20">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold mb-6">Premium <span class="gold-text">Investment</span> Solutions</h1>
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+        Grow your wealth with our expertly curated investment plans designed for maximum returns
+      </p>
+      <div class="flex justify-center gap-4">
+        <a href="#plans" class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-medium transition">
+          View Plans
+        </a>
+        <a href="#" class="bg-transparent border border-green-500 text-green-400 hover:bg-green-500/10 px-6 py-3 rounded-md font-medium transition">
+          Learn More
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="bg-white py-12 shadow-sm">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="stat-card bg-primary-900 text-white p-6 rounded-lg text-center">
+          <div class="text-3xl font-bold gold-text mb-2">$42M+</div>
+          <div class="text-gray-300">Assets Under Management</div>
+        </div>
+        <div class="stat-card bg-primary-900 text-white p-6 rounded-lg text-center">
+          <div class="text-3xl font-bold gold-text mb-2">12,458+</div>
+          <div class="text-gray-300">Active Investors</div>
+        </div>
+        <div class="stat-card bg-primary-900 text-white p-6 rounded-lg text-center">
+          <div class="text-3xl font-bold gold-text mb-2">98.7%</div>
+          <div class="text-gray-300">Success Rate</div>
+        </div>
+        <div class="stat-card bg-primary-900 text-white p-6 rounded-lg text-center">
+          <div class="text-3xl font-bold gold-text mb-2">24/7</div>
+          <div class="text-gray-300">Client Support</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <main class="container mx-auto px-4 py-16" id="plans">
+    <!-- Standard Investment Plans -->
+    <section class="mb-20">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900">Our Investment <span class="gold-text">Plans</span></h2>
+          <p class="text-gray-600 mt-2">Choose the perfect plan to match your financial goals</p>
+        </div>
+        <div class="flex items-center mt-4 md:mt-0">
+          <i class="fas fa-info-circle text-green-500 mr-2"></i>
+          <span class="text-gray-600">Daily returns, compounded automatically</span>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Starter Plan -->
+        <div class="plan-card bg-white rounded-xl shadow-md p-8 relative">
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800">Starter Plan</h3>
+            <div class="text-green-500 font-bold text-3xl mt-2">2% <span class="text-lg">Daily</span></div>
+            <div class="text-gray-500 mt-1">For 15 Days</div>
+          </div>
+          <div class="space-y-3 text-gray-600 mb-6">
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Min Deposit:</span>
+              <span class="font-medium">$20</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Max Deposit:</span>
+              <span class="font-medium">$100</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Total ROI:</span>
+              <span class="font-medium text-green-500">30%</span>
+            </div>
+          </div>
+          <button onclick="openInvestModal('starter', 'Starter Plan', 2, 15, 20, 100)" 
+                  class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition font-medium">
+            Start Investing
+          </button>
+        </div>
+        
+        <!-- Silver Plan -->
+        <div class="plan-card bg-white rounded-xl shadow-md p-8 relative">
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800">Silver Plan</h3>
+            <div class="text-green-500 font-bold text-3xl mt-2">3% <span class="text-lg">Daily</span></div>
+            <div class="text-gray-500 mt-1">For 20 Days</div>
+          </div>
+          <div class="space-y-3 text-gray-600 mb-6">
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Min Deposit:</span>
+              <span class="font-medium">$101</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Max Deposit:</span>
+              <span class="font-medium">$500</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Total ROI:</span>
+              <span class="font-medium text-green-500">60%</span>
+            </div>
+          </div>
+          <button onclick="openInvestModal('silver', 'Silver Plan', 3, 20, 101, 500)" 
+                  class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition font-medium">
+            Start Investing
+          </button>
+        </div>
+        
+        <!-- Gold Plan (Popular) -->
+        <div class="plan-card bg-white rounded-xl shadow-md p-8 relative border-2 border-secondary-400">
+          <div class="popular-badge">MOST POPULAR</div>
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800">Gold Plan</h3>
+            <div class="text-green-500 font-bold text-3xl mt-2">5% <span class="text-lg">Daily</span></div>
+            <div class="text-gray-500 mt-1">For 30 Days</div>
+          </div>
+          <div class="space-y-3 text-gray-600 mb-6">
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Min Deposit:</span>
+              <span class="font-medium">$501</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Max Deposit:</span>
+              <span class="font-medium">$2,000</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Total ROI:</span>
+              <span class="font-medium text-green-500">150%</span>
+            </div>
+          </div>
+          <button onclick="openInvestModal('gold', 'Gold Plan', 5, 30, 501, 2000)" 
+                  class="w-full bg-secondary-500 hover:bg-secondary-600 text-gray-900 py-3 rounded-lg transition font-medium">
+            Start Investing
+          </button>
+        </div>
+        
+        <!-- VIP Plan -->
+        <div class="plan-card bg-white rounded-xl shadow-md p-8 relative">
+          <div class="text-center mb-6">
+            <h3 class="text-xl font-bold text-gray-800">VIP Plan</h3>
+            <div class="text-green-500 font-bold text-3xl mt-2">7% <span class="text-lg">Daily</span></div>
+            <div class="text-gray-500 mt-1">For 20 Days</div>
+          </div>
+          <div class="space-y-3 text-gray-600 mb-6">
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Min Deposit:</span>
+              <span class="font-medium">$2,001</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Max Deposit:</span>
+              <span class="font-medium">Unlimited</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-gray-100">
+              <span>Total ROI:</span>
+              <span class="font-medium text-green-500">140%</span>
+            </div>
+          </div>
+          <button onclick="openInvestModal('vip', 'VIP Plan', 7, 20, 2001, 100000)" 
+                  class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition font-medium">
+            Start Investing
+          </button>
+        </div>
+      </div>
+    </section>
+	
+    <!-- BMF Investment Plans -->
+    <div class="bg-gray-800 rounded-xl shadow-lg p-6 mb-12">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+        <h2 class="text-2xl font-bold flex items-center text-white">
+          <i class="fas fa-coins text-blue-400 mr-3"></i>
+          BMF Investment Plans
+        </h2>
+        <span class="bg-blue-500 text-white text-sm font-bold px-3 py-1 rounded-full mt-2 md:mt-0">POPULAR</span>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- BMF1 Plan -->
+        <div class="plan-card bg-gray-700 rounded-lg overflow-hidden border border-gray-600 hover:border-blue-400">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-4 text-white">BMF1</h3>
+            <img src="BMF1.jpeg" alt="BMF1 Plan" class="w-full h-40 object-cover rounded mb-4">
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Investment:</span>
+                <span class="font-medium text-white">$23.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Return:</span>
+                <span class="font-medium text-green-400">$41.40</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Duration:</span>
+                <span class="font-medium text-white">20 days</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Daily Profit:</span>
+                <span class="font-medium text-green-400">$2.07</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Referral Bonus:</span>
+                <span class="font-medium text-white">$2.76</span>
+              </div>
+            </div>
+            <button onclick="openInvestModal('bmf1', 'BMF1 Plan', 9, 20, 23, 23)" 
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md mt-4 font-medium transition">
+              Invest Now
+            </button>
+          </div>
+        </div>
+
+        <!-- BMF2 Plan -->
+        <div class="plan-card bg-gray-700 rounded-lg overflow-hidden border border-gray-600 hover:border-blue-400">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-4 text-white">BMF2</h3>
+            <img src="BMF2.jpeg" alt="BMF2 Plan" class="w-full h-40 object-cover rounded mb-4">
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Investment:</span>
+                <span class="font-medium text-white">$108.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Return:</span>
+                <span class="font-medium text-green-400">$194.40</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Duration:</span>
+                <span class="font-medium text-white">30 days</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Daily Profit:</span>
+                <span class="font-medium text-green-400">$6.48</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Referral Bonus:</span>
+                <span class="font-medium text-white">$12.96</span>
+              </div>
+            </div>
+            <button onclick="openInvestModal('bmf2', 'BMF2 Plan', 10.8, 30, 108, 108)" 
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md mt-4 font-medium transition">
+              Invest Now
+            </button>
+          </div>
+        </div>
+
+        <!-- BMF3 Plan -->
+        <div class="plan-card bg-gray-700 rounded-lg overflow-hidden border border-gray-600 hover:border-blue-400">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-4 text-white">BMF3</h3>
+            <img src="BMF3.jpeg" alt="BMF3 Plan" class="w-full h-40 object-cover rounded mb-4">
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Investment:</span>
+                <span class="font-medium text-white">$140.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Return:</span>
+                <span class="font-medium text-green-400">$252.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Duration:</span>
+                <span class="font-medium text-white">40 days</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Daily Profit:</span>
+                <span class="font-medium text-green-400">$6.30</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Referral Bonus:</span>
+                <span class="font-medium text-white">$16.96</span>
+              </div>
+            </div>
+            <button onclick="openInvestModal('bmf3', 'BMF3 Plan', 9, 40, 140, 140)" 
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md mt-4 font-medium transition">
+              Invest Now
+            </button>
+          </div>
+        </div>
+
+        <!-- BMF4 Plan -->
+        <div class="plan-card bg-gray-700 rounded-lg overflow-hidden border border-gray-600 hover:border-blue-400">
+          <div class="p-6">
+            <h3 class="text-xl font-bold mb-4 text-white">BMF4</h3>
+            <img src="BMF3.jpeg" alt="BMF4 Plan" class="w-full h-40 object-cover rounded mb-4">
+            <div class="space-y-3">
+              <div class="flex justify-between">
+                <span class="text-gray-400">Investment:</span>
+                <span class="font-medium text-white">$428.00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Total Return:</span>
+                <span class="font-medium text-green-400">$770.40</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Duration:</span>
+                <span class="font-medium text-white">45 days</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Daily Profit:</span>
+                <span class="font-medium text-green-400">$17.12</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-gray-400">Referral Bonus:</span>
+                <span class="font-medium text-white">$51.36</span>
+              </div>
+            </div>
+            <button onclick="openInvestModal('bmf4', 'BMF4 Plan', 9, 45, 428, 428)" 
+                    class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-md mt-4 font-medium transition">
+              Invest Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIP Plans Section -->
+    <section class="mb-20">
+      <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+        <div>
+          <h2 class="text-3xl font-bold text-gray-900"><span class="gold-text">VIP</span> Investment Plans</h2>
+          <p class="text-gray-600 mt-2">Exclusive high-yield opportunities for our premium clients</p>
+        </div>
+        <span class="bg-secondary-100 text-secondary-800 text-sm font-bold px-4 py-2 rounded-full mt-4 md:mt-0">
+          PREMIUM OFFERS
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- VIP1 Plan -->
+        <div class="plan-card vip-card rounded-xl p-8 relative">
+          <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold text-white">VIP1</h3>
+            <div class="font-bold text-4xl text-secondary-400 mt-2">15% <span class="text-lg">Daily</span></div>
+            <div class="text-green-200 mt-1">For 3 Days</div>
+          </div>
+          <div class="space-y-3 text-white mb-6">
+            <div class="flex justify-between py-3 border-b border-green-200/30">
+              <span>Investment:</span>
+              <span class="font-medium">$30.00</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-green-200/30">
+              <span>Total Return:</span>
+              <span class="font-medium">$45.00</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-green-200/30">
+              <span>Daily Profit:</span>
+              <span class="font-medium">$15.00</span>
+            </div>
+          </div>
+          <button onclick="openInvestModal('vip1', 'VIP1 Plan', 15, 3, 30, 30)" 
+                  class="w-full bg-secondary-500 hover:bg-secondary-600 text-gray-900 py-3 rounded-lg transition font-medium">
+            Join VIP Now
+          </button>
+        </div>
+
+        <!-- VIP2 Plan -->
+        <div class="plan-card vip-card rounded-xl p-8 relative">
+          <div class="text-center mb-6">
+            <h3 class="text-2xl font-bold text-white">VIP2</h3>
+            <div class="font-bold text-4xl text-secondary-400 mt-2">18% <span class="text-lg">Daily</span></div>
+            <div class="text-green-200 mt-1">For 5 Days</div>
+          </div>
+          <div class="space-y-3 text-white mb-6">
+            <div class="flex justify-between py-3 border-b border-green-200/30">
+              <span>Investment:</span>
+              <span class="font-medium">$50.00</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-green-200/30">
+              <span>Total Return:</span>
+              <span class="font-medium">$90.00</span>
+            </div>
+            <div class="flex justify-between py-3 border-b border-green-200/30">
+              <span>Daily Profit:</span>
+              <span class="font-medium">$18.00</span>
+            </div>
+          </div>
+          <button onclick="openInvestModal('vip2', 'VIP2 Plan', 18, 5, 50, 50)" 
+                  class="w-full bg-secondary-500 hover:bg-secondary-600 text-gray-900 py-3 rounded-lg transition font-medium">
+            Join VIP Now
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Elite VIP Plan -->
+    <section class="mb-20">
+      <div class="elite-card rounded-xl p-12 shadow-lg">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10">
+          <div>
+            <h2 class="text-3xl font-bold text-white">Elite <span class="gold-text">VIP</span> Plan</h2>
+            <p class="text-yellow-100 mt-2">For our most valued members with 10+ referrals and 30+ days membership</p>
+          </div>
+          <span class="bg-white text-secondary-600 text-sm font-bold px-4 py-2 rounded-full mt-4 md:mt-0">
+            EXCLUSIVE MEMBERSHIP
+          </span>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="stat-card p-8 rounded-lg">
+            <div class="text-center mb-4">
+              <div class="font-bold text-5xl gold-text mb-2">10%</div>
+              <div class="text-yellow-100 text-lg">Daily Returns</div>
+              <div class="text-yellow-100 mt-1">For 15 Days</div>
+            </div>
+          </div>
+          
+          <div class="stat-card p-8 rounded-lg">
+            <div class="space-y-3 text-white">
+              <div class="flex justify-between py-3 border-b border-yellow-200/20">
+                <span>Min Deposit:</span>
+                <span class="font-medium">$5,000</span>
+              </div>
+              <div class="flex justify-between py-3 border-b border-yellow-200/20">
+                <span>Max Deposit:</span>
+                <span class="font-medium">$50,000</span>
+              </div>
+              <div class="flex justify-between py-3">
+                <span>Total ROI:</span>
+                <span class="font-medium">150%</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex flex-col justify-center">
+            <button onclick="openInvestModal('elite-vip', 'Elite VIP Plan', 10, 15, 5000, 50000)" 
+                    class="w-full bg-white hover:bg-gray-100 text-secondary-600 py-4 rounded-lg transition font-medium text-lg">
+              Unlock Elite VIP
+            </button>
+            <p class="text-yellow-100 text-sm mt-3 text-center">*Qualification requirements apply</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="bg-primary-900 rounded-xl shadow-lg p-12 mb-16 text-white">
+      <h2 class="text-3xl font-bold text-center mb-16">Why Choose <span class="gold-text">SalticsX</span>?</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div class="text-center">
+          <div class="bg-green-800/30 text-green-400 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-shield-alt text-3xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-4">Bank-Level Security</h3>
+          <p class="text-gray-300">Military-grade encryption and multi-factor authentication to protect your assets.</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-green-800/30 text-green-400 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-chart-line text-3xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-4">Proven Performance</h3>
+          <p class="text-gray-300">Consistent returns with our diversified investment strategies.</p>
+        </div>
+        <div class="text-center">
+          <div class="bg-green-800/30 text-green-400 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <i class="fas fa-user-tie text-3xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-4">Dedicated Advisors</h3>
+          <p class="text-gray-300">Personal financial advisors for VIP members.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="mb-20">
+      <h2 class="text-3xl font-bold text-center mb-16">What Our <span class="gold-text">Clients</span> Say</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow-md">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold mr-4">JD</div>
+            <div>
+              <h4 class="font-bold">John D.</h4>
+              <div class="flex text-secondary-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600">"The Gold Plan has consistently delivered 5% daily returns. My initial investment has nearly doubled in just 30 days!"</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-md">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold mr-4">SM</div>
+            <div>
+              <h4 class="font-bold">Sarah M.</h4>
+              <div class="flex text-secondary-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600">"Upgraded to VIP after seeing great results. The support team is exceptional and always available."</p>
+        </div>
+        <div class="bg-white p-8 rounded-xl shadow-md">
+          <div class="flex items-center mb-4">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold mr-4">RK</div>
+            <div>
+              <h4 class="font-bold">Robert K.</h4>
+              <div class="flex text-secondary-400">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+            </div>
+          </div>
+          <p class="text-gray-600">"Transparent processes and regular updates give me confidence in my investments. Highly recommend!"</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- CTA Section -->
+  <section class="bg-primary-900 text-white py-16">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold mb-6">Ready to Grow Your <span class="gold-text">Wealth</span>?</h2>
+      <p class="text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+        Join thousands of investors who trust SalticsX with their financial growth
+      </p>
+      <div class="flex justify-center gap-4">
+        <a href="register.html" class="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-md font-medium text-lg transition">
+          Get Started Now
+        </a>
+        <a href="#" class="bg-transparent border border-white text-white hover:bg-white/10 px-8 py-4 rounded-md font-medium text-lg transition">
+          Contact Us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 text-gray-400 py-16">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+            <i class="fas fa-chart-line text-green-500 mr-2"></i>
+            SalticsX
+          </h3>
+          <p class="mb-4">Premium investment solutions for discerning clients.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-green-500"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-green-500"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="text-gray-400 hover:text-green-500"><i class="fab fa-facebook"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-6">Company</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:text-green-500 transition">About Us</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Careers</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Blog</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Press</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-6">Legal</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:text-green-500 transition">Terms of Service</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Compliance</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Regulations</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-6">Contact</h3>
+          <ul class="space-y-3">
+            <li class="flex items-center">
+              <i class="fas fa-map-marker-alt text-green-500 mr-3 w-4"></i>
+              <span>123 Financial District, New York, NY 10005</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope text-green-500 mr-3 w-4"></i>
+              <span>support@salticsx.com</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone-alt text-green-500 mr-3 w-4"></i>
+              <span>+1 (555) 123-4567</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-gray-800 text-center text-gray-500">
+        <p>&copy; 2023 SalticsX. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Investment Modal -->
+  <div id="investModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-2xl font-bold" id="modalPlanName">Invest in Plan</h3>
+          <button id="closeModal" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div class="mb-6">
+          <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Daily Return:</span>
+            <span class="font-medium" id="modalDailyReturn">0%</span>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Duration:</span>
+            <span class="font-medium" id="modalDuration">0 days</span>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Total ROI:</span>
+            <span class="font-medium text-green-500" id="modalTotalROI">0%</span>
+          </div>
+        </div>
+        
+        <form id="investmentForm">
+          <div class="mb-4">
+            <label for="amount" class="block text-gray-700 mb-2">Investment Amount ($)</label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">$</span>
+              <input type="number" id="amount" name="amount" 
+                     class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                     step="0.01" min="0" required>
+            </div>
+            <p class="text-sm text-gray-500 mt-1" id="amountRange">Minimum: $0 - Maximum: $0</p>
+          </div>
+          
+          <div class="mb-6">
+            <label for="wallet" class="block text-gray-700 mb-2">Payment Method</label>
+            <select id="wallet" name="wallet" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent" required>
+              <option value="">Select payment method</option>
+              <option value="paypal">PayPal</option>
+              <option value="btc">Bitcoin (BTC)</option>
+              <option value="eth">Ethereum (ETH)</option>
+              <option value="usdt">USDT (TRC20)</option>
+              <option value="bank">Bank Transfer</option>
+            </select>
+          </div>
+          
+          <div id="paypal-button-container"></div>
+          
+          <div class="flex justify-end space-x-3 mt-4" id="manualPaymentButtons">
+            <button type="button" id="cancelInvest" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+              Cancel
+            </button>
+            <button type="button" id="confirmInvest" class="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md font-medium">
+              Confirm Investment
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="confirmationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+      <div class="p-6 text-center">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <i class="fas fa-check text-green-500 text-2xl"></i>
+        </div>
+        
+        <h3 class="text-2xl font-bold mb-2">Investment Successful!</h3>
+        <p class="text-gray-600 mb-6" id="confirmationMessage">
+          Your investment has been processed successfully.
+        </p>
+        
+        <div class="bg-gray-50 p-4 rounded-lg mb-6 text-left">
+          <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Plan:</span>
+            <span class="font-medium" id="confirmPlanName">-</span>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Amount:</span>
+            <span class="font-medium" id="confirmAmount">-</span>
+          </div>
+          <div class="flex justify-between mb-2">
+            <span class="text-gray-600">Daily Return:</span>
+            <span class="font-medium" id="confirmDailyReturn">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-600">Duration:</span>
+            <span class="font-medium" id="confirmDuration">-</span>
+          </div>
+        </div>
+        
+        <button id="closeConfirmation" class="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md font-medium">
+          View Dashboard
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Investment Status Modal -->
+  <div id="investmentStatusModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold text-gray-900">Investment Status</h3>
+          <button id="closeStatusModal" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        
+        <div id="investmentStatusContent">
+          <!-- Dynamic content will be inserted here -->
+        </div>
+        
+        <div class="flex justify-end space-x-3 mt-6">
+          <button id="closeStatusBtn" class="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
+            Close
+          </button>
+          <button id="withdrawProfitBtn" class="hidden px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md font-medium">
+            Withdraw Profit
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  // ==================== CORE FUNCTIONALITY ====================
+  const InvestmentManager = {
+    // Initialize PayPal button with enhanced validation
+    initPayPalButton: function(planId, amount) {
+      try {
+        // Clear previous button
+        const container = document.getElementById('paypal-button-container');
+        container.innerHTML = '';
+        
+        // Validate inputs
+        if (!planId || !amount || isNaN(amount)) {
+          throw new Error('Invalid investment parameters');
+        }
+
+        // Create PayPal button
+        paypal.Buttons({
+          style: {
+            layout: 'vertical',
+            color: 'gold',
+            shape: 'rect',
+            label: 'paypal'
+          },
+          createOrder: async (data, actions) => {
+            try {
+              const response = await fetch('/api/v1/payments/paypal/orders', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${AuthManager.getToken()}`
+                },
+                body: JSON.stringify({ 
+                  planId, 
+                  amount,
+                  currency: 'USD'
+                })
+              });
+              
+              if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Failed to create order');
+              }
+              
+              const { orderID } = await response.json();
+              return orderID;
+            } catch (error) {
+              console.error('Order creation failed:', error);
+              UI.showToast(`Payment error: ${error.message}`, 'error');
+              throw error;
+            }
+          },
+          onApprove: async (data, actions) => {
+            try {
+              UI.showLoader('#paypal-button-container', 'Processing payment...');
+              
+              const response = await fetch('/api/v1/payments/paypal/capture', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${AuthManager.getToken()}`
+                },
+                body: JSON.stringify({ 
+                  orderID: data.orderID,
+                  planId
+                })
+              });
+              
+              if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.message || 'Payment capture failed');
+              }
+              
+              const result = await response.json();
+              
+              // Update UI
+              UI.showToast('Investment created successfully!', 'success');
+              UI.updateUserBalance(result.newBalance);
+              
+              // Track conversion
+              if (window.gtag) {
+                gtag('event', 'conversion', {
+                  'send_to': 'AW-YOUR_CONVERSION_ID',
+                  'value': amount,
+                  'currency': 'USD',
+                  'transaction_id': data.orderID
+                });
+              }
+              
+              // Redirect to dashboard after 2 seconds
+              setTimeout(() => {
+                window.location.href = 'dashboard.html';
+              }, 2000);
+              
+            } catch (error) {
+              console.error('Payment approval failed:', error);
+              UI.showToast(`Payment failed: ${error.message}`, 'error');
+            } finally {
+              UI.hideLoader('#paypal-button-container');
+            }
+          },
+          onError: (err) => {
+            console.error('PayPal error:', err);
+            UI.showToast('Payment processing error. Please try again.', 'error');
+          },
+          onCancel: (data) => {
+            UI.showToast('Payment was cancelled', 'warning');
+          }
+        }).render('#paypal-button-container');
+        
+      } catch (error) {
+        console.error('PayPal initialization failed:', error);
+        UI.showToast('Payment system error. Please try later.', 'error');
+      }
+    },
+
+    // Process manual payment methods
+    processManualPayment: async function(planId, amount, paymentMethod) {
+      try {
+        UI.showLoader('#manualPaymentButtons', 'Processing...');
+        
+        const response = await fetch('/api/v1/investments', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${AuthManager.getToken()}`
+          },
+          body: JSON.stringify({
+            planId,
+            amount,
+            paymentMethod
+          })
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.message || 'Investment failed');
+        }
+        
+        const result = await response.json();
+        UI.showInvestmentConfirmation(result.investment);
+        
+      } catch (error) {
+        console.error('Investment error:', error);
+        UI.showToast(`Investment failed: ${error.message}`, 'error');
+      } finally {
+        UI.hideLoader('#manualPaymentButtons');
+      }
+    }
+  };
+
+  // ==================== AUTH MANAGEMENT ====================
+  const AuthManager = {
+    getToken: function() {
+      return localStorage.getItem('authToken');
+    },
+    
+    getUserData: function() {
+      const data = localStorage.getItem('userData');
+      return data ? JSON.parse(data) : null;
+    },
+    
+    logout: function() {
+      // Clear auth data
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('userData');
+      
+      // Track logout
+      if (window.gtag) {
+        gtag('event', 'logout', {
+          method: 'UI'
+        });
+      }
+      
+      // Redirect to home
+      window.location.href = 'index.html';
+    }
+  };
+
+  // ==================== USER INTERFACE ====================
+  const UI = {
+    // Show modal with investment details
+    openInvestModal: function(planId, planName, dailyReturn, duration, minAmount, maxAmount) {
+      try {
+        // Validate inputs
+        if (!planId || !planName || isNaN(dailyReturn) || isNaN(duration) || isNaN(minAmount)) {
+          throw new Error('Invalid plan parameters');
+        }
+        
+        // Set modal content
+        document.getElementById('modalPlanName').textContent = planName;
+        document.getElementById('modalDailyReturn').textContent = `${dailyReturn}% daily`;
+        document.getElementById('modalDuration').textContent = `${duration} days`;
+        document.getElementById('modalTotalROI').textContent = `${dailyReturn * duration}% total`;
+        
+        // Configure amount input
+        const amountInput = document.getElementById('amount');
+        amountInput.value = minAmount;
+        amountInput.min = minAmount;
+        if (maxAmount) amountInput.max = maxAmount;
+        
+        // Show amount range
+        document.getElementById('amountRange').textContent = 
+          `Minimum: $${minAmount}${maxAmount ? ` - Maximum: $${maxAmount}` : ''}`;
+        
+        // Store plan ID
+        document.getElementById('investModal').dataset.planId = planId;
+        
+        // Initialize PayPal button
+        InvestmentManager.initPayPalButton(planId, minAmount);
+        
+        // Update PayPal button when amount changes
+        amountInput.addEventListener('input', function() {
+          const amount = parseFloat(this.value);
+          if (!isNaN(amount) && amount >= minAmount && (!maxAmount || amount <= maxAmount)) {
+            document.getElementById('paypal-button-container').innerHTML = '';
+            InvestmentManager.initPayPalButton(planId, amount.toFixed(2));
+          }
+        });
+        
+        // Show modal
+        document.getElementById('investModal').classList.remove('hidden');
+        
+      } catch (error) {
+        console.error('Modal error:', error);
+        this.showToast('Failed to open investment modal', 'error');
+      }
+    },
+    
+    // Show investment confirmation
+    showInvestmentConfirmation: function(investment) {
+      document.getElementById('confirmPlanName').textContent = investment.planName;
+      document.getElementById('confirmAmount').textContent = `$${investment.amount.toFixed(2)}`;
+      document.getElementById('confirmDailyReturn').textContent = `${investment.dailyPercent}% daily`;
+      document.getElementById('confirmDuration').textContent = `${investment.durationDays} days`;
+      
+      document.getElementById('investModal').classList.add('hidden');
+      document.getElementById('confirmationModal').classList.remove('hidden');
+    },
+    
+    // Show loading state
+    showLoader: function(selector, message) {
+      const element = document.querySelector(selector);
+      if (element) {
+        element.innerHTML = `
+          <div class="flex items-center justify-center space-x-2">
+            <div class="spinner-border animate-spin inline-block w-4 h-4 border-2 rounded-full" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <span>${message}</span>
+          </div>
+        `;
+      }
+    },
+    
+    // Hide loading state
+    hideLoader: function(selector) {
+      const element = document.querySelector(selector);
+      if (element) {
+        element.innerHTML = '';
+      }
+    },
+    
+    // Show toast notification
+    showToast: function(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.innerHTML = `
+        <div class="flex items-center">
+          <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
+          <span>${message}</span>
+        </div>
+      `;
+      
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.classList.add('fade-out');
+        setTimeout(() => toast.remove(), 500);
+      }, 3000);
+    },
+    
+    // Update user balance display
+    updateUserBalance: function(newBalance) {
+      const balanceElements = document.querySelectorAll('.user-balance');
+      balanceElements.forEach(el => {
+        el.textContent = `$${newBalance.toFixed(2)}`;
+      });
+    }
+  };
+
+  // ==================== EVENT HANDLERS ====================
+  const EventHandlers = {
+    setup: function() {
+      // Mobile menu toggle
+      document.getElementById('mobileMenuButton')?.addEventListener('click', () => {
+        document.getElementById('mobileMenu')?.classList.toggle('hidden');
+      });
+      
+      // User dropdown
+      document.getElementById('userDropdown')?.addEventListener('click', function() {
+        this.querySelector('div')?.classList.toggle('hidden');
+      });
+      
+      // Logout buttons
+      document.getElementById('logoutBtn')?.addEventListener('click', AuthManager.logout);
+      document.getElementById('mobileLogoutBtn')?.addEventListener('click', AuthManager.logout);
+      
+      // Modal close buttons
+      document.getElementById('closeModal')?.addEventListener('click', () => {
+        document.getElementById('investModal').classList.add('hidden');
+      });
+      
+      // Confirm investment button
+      document.getElementById('confirmInvest')?.addEventListener('click', () => {
+        const amount = parseFloat(document.getElementById('amount').value);
+        const wallet = document.getElementById('wallet').value;
+        const planId = document.getElementById('investModal').dataset.planId;
+        
+        if (!amount || !wallet) {
+          UI.showToast('Please fill all fields', 'error');
+          return;
+        }
+        
+        InvestmentManager.processManualPayment(planId, amount, wallet);
+      });
+    }
+  };
+
+  // ==================== INITIALIZATION ====================
+  document.addEventListener('DOMContentLoaded', function() {
+    // Check auth state
+    const userData = AuthManager.getUserData();
+    if (userData) {
+      // Update UI for logged in user
+      document.getElementById('usernameDisplay').textContent = userData.firstName || 'User';
+      document.getElementById('mobileUsernameDisplay').textContent = userData.firstName || 'User';
+    } else {
+      // Redirect to login if not authenticated
+      window.location.href = 'login.html';
+    }
+    
+    // Set up event handlers
+    EventHandlers.setup();
+    
+    // Initialize real-time updates
+    RealTimeManager.init();
+  });
+
+  // ==================== REAL-TIME UPDATES ====================
+  const RealTimeManager = {
+    init: function() {
+      // Connect to WebSocket for real-time updates
+      this.connectWebSocket();
+      
+      // Simulate daily profit notification (demo only)
+      setTimeout(() => {
+        UI.showToast('Daily Profit Credited: $25.00', 'success');
+      }, 15000);
+    },
+    
+    connectWebSocket: function() {
+      // In production, replace with actual WebSocket connection
+      console.log('Simulating WebSocket connection');
+      
+      // Example of real implementation:
+      /*
+      const socket = new WebSocket(`wss://yourdomain.com/ws?token=${AuthManager.getToken()}`);
+      
+      socket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'balance_update') {
+          UI.updateUserBalance(data.balance);
+        }
+      };
+      */
+    }
+  };
+
+  // ==================== GLOBAL ACCESS ====================
+  // Make functions available for onclick attributes
+  window.openInvestModal = UI.openInvestModal;
+  window.logout = AuthManager.logout;
+</script>
+
+<style>
+  /* Toast notifications */
+  .toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 12px 20px;
+    border-radius: 4px;
+    color: white;
+    z-index: 1000;
+    animation: slideIn 0.3s forwards;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .toast-success {
+    background-color: #22c55e;
+  }
+  
+  .toast-error {
+    background-color: #ef4444;
+  }
+  
+  .toast-warning {
+    background-color: #f59e0b;
+  }
+  
+  .fade-out {
+    animation: fadeOut 0.5s forwards;
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+  }
+  
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+  
+  /* Loading spinner */
+  .spinner-border {
+    border-top-color: transparent;
+  }
+</style>
+ 
+
+  
+</body>
+</html>

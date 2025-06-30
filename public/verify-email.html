@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verification - SalticsX Global Investments</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="auth.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              500: '#22c55e',
+              600: '#16a34a',
+            },
+            gold: {
+              400: '#eab308',
+              500: '#ca8a04',
+            },
+            dark: {
+              800: '#1e293b',
+              900: '#0f172a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          backgroundImage: {
+            'auth-pattern': "url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .auth-container {
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.15;
+      z-index: 0;
+    }
+    .auth-content {
+      position: relative;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="bg-dark-900 min-h-screen flex flex-col">
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <div class="container mx-auto px-4 py-3">
+      <nav class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <img src="assets/images/logo.png" alt="SalticsX" class="h-8">
+          <span class="text-xl font-bold text-dark-900 font-serif">SalticsX</span>
+        </div>
+        
+        <div class="flex space-x-4 ml-6">
+          <a href="login.html" class="px-4 py-2 border border-gold-400 text-gold-500 rounded-md hover:bg-gold-50 font-medium">Login</a>
+          <a href="register.html" class="px-4 py-2 bg-gradient-to-r from-gold-400 to-primary-500 text-white rounded-md hover:opacity-90 font-medium shadow-md">Register</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-grow auth-container">
+    <div class="auth-content container mx-auto px-4 py-12 flex items-center justify-center min-h-[calc(100vh-80px)]">
+      <div class="w-full max-w-md">
+        <div class="bg-white/5 backdrop-blur-lg border border-white/10 rounded-xl shadow-2xl overflow-hidden">
+          <div class="p-1 bg-gradient-to-r from-gold-400 to-primary-500"></div>
+          
+          <div class="px-8 py-10">
+            <div class="text-center mb-8">
+              <img src="assets/images/logo.png" alt="SalticsX" class="h-16 mx-auto mb-4">
+              <h2 class="text-3xl font-bold text-white mb-2 font-serif" id="verificationTitle">Verifying Your Email</h2>
+              <p class="text-gray-400" id="verificationMessage">Please wait while we verify your email address...</p>
+            </div>
+            
+            <div class="text-center mt-8" id="actionButtons" style="display: none;">
+              <a href="login.html" id="loginButton" class="px-4 py-2 bg-gradient-to-r from-gold-400 to-primary-500 text-white rounded-md hover:opacity-90 font-medium shadow-md inline-block">Proceed to Login</a>
+              <a href="index.html" class="mt-4 px-4 py-2 border border-gray-600 text-gray-300 rounded-md hover:bg-gray-800 font-medium inline-block ml-2">Go to Homepage</a>
+            </div>
+            
+            <div class="text-center mt-8" id="resendSection" style="display: none;">
+              <p class="text-gray-400 mb-2">Didn't receive the email?</p>
+              <button id="resendButton" class="text-gold-400 hover:text-gold-300 font-medium">
+                Resend Verification Email
+              </button>
+              <div id="resendSpinner" class="hidden mt-2">
+                <i class="fas fa-spinner fa-spin text-gold-400"></i>
+                <span class="ml-2 text-gray-400">Sending...</span>
+              </div>
+              <div id="resendSuccess" class="hidden mt-2 text-green-400">
+                <i class="fas fa-check-circle"></i>
+                <span class="ml-2">Email sent successfully!</span>
+              </div>
+              <div id="resendError" class="hidden mt-2 text-red-400">
+                <i class="fas fa-exclamation-circle"></i>
+                <span class="ml-2" id="resendErrorMessage">Error sending email</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-400 py-6 border-t border-gray-800">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="flex items-center space-x-2 mb-4 md:mb-0">
+          <img src="assets/images/logo.png" alt="SalticsX" class="h-6">
+          <span class="text-sm">SalticsX Global Investments</span>
+        </div>
+        <div class="text-sm">
+          &copy; 2023 SalticsX. All rights reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const token = urlParams.get('token');
+      const userId = urlParams.get('userId');
+      
+      const verificationTitle = document.getElementById('verificationTitle');
+      const verificationMessage = document.getElementById('verificationMessage');
+      const actionButtons = document.getElementById('actionButtons');
+      const resendSection = document.getElementById('resendSection');
+      const resendButton = document.getElementById('resendButton');
+      const resendSpinner = document.getElementById('resendSpinner');
+      const resendSuccess = document.getElementById('resendSuccess');
+      const resendError = document.getElementById('resendError');
+      const resendErrorMessage = document.getElementById('resendErrorMessage');
+      
+      if (token) {
+        // Verify the token with the backend
+        try {
+          const response = await fetch(`https://api.salticsx.com/auth/verify-email?token=${token}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          
+          const data = await response.json();
+          
+          if (response.ok) {
+            // Verification successful
+            verificationTitle.textContent = 'Email Verified!';
+            verificationMessage.textContent = 'Your email has been successfully verified. You can now log in to your account.';
+            actionButtons.style.display = 'block';
+            
+            // Store the token and user data if available
+            if (data.token && data.user) {
+              localStorage.setItem('authToken', data.token);
+              localStorage.setItem('user', JSON.stringify(data.user));
+            }
+          } else {
+            // Verification failed
+            verificationTitle.textContent = 'Verification Failed';
+            verificationMessage.textContent = data.message || 'The verification link is invalid or has expired.';
+            resendSection.style.display = 'block';
+          }
+        } catch (error) {
+          console.error('Verification error:', error);
+          verificationTitle.textContent = 'Verification Error';
+          verificationMessage.textContent = 'An error occurred while verifying your email. Please try again later.';
+          resendSection.style.display = 'block';
+        }
+      } else if (userId) {
+        // Show resend option if userId is provided but no token
+        verificationTitle.textContent = 'Verify Your Email';
+        verificationMessage.textContent = 'Please check your email for the verification link.';
+        resendSection.style.display = 'block';
+      } else {
+        // No token or userId provided
+        verificationTitle.textContent = 'Invalid Verification Link';
+        verificationMessage.textContent = 'The verification link is missing required information.';
+      }
+      
+      // Handle resend verification email
+      if (resendButton) {
+        resendButton.addEventListener('click', async function() {
+          resendSpinner.classList.remove('hidden');
+          resendSuccess.classList.add('hidden');
+          resendError.classList.add('hidden');
+          
+          try {
+            const response = await fetch('https://api.salticsx.com/auth/resend-verification', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                email: userId || localStorage.getItem('userEmail')
+              })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+              resendSuccess.classList.remove('hidden');
+              verificationMessage.textContent = 'A new verification email has been sent to your email address.';
+            } else {
+              throw new Error(data.message || 'Failed to resend verification email');
+            }
+          } catch (error) {
+            resendErrorMessage.textContent = error.message;
+            resendError.classList.remove('hidden');
+          } finally {
+            resendSpinner.classList.add('hidden');
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

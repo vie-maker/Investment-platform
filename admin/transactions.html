@@ -1,0 +1,452 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transactions | SalticsX Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            secondary: {
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            },
+            dark: {
+              800: '#1e293b',
+              900: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .gold-text {
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      background-image: linear-gradient(to right, #facc15, #ca8a04);
+    }
+    .admin-sidebar {
+      background: linear-gradient(135deg, #14532d 0%, #0f172a 100%);
+    }
+    .admin-menu-item {
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+    }
+    .admin-menu-item:hover, .admin-menu-item.active {
+      background: rgba(255,255,255,0.05);
+      border-left-color: #22c55e;
+    }
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-completed {
+      background: rgba(0, 184, 148, 0.1);
+      color: #00b894;
+    }
+    .status-pending {
+      background: rgba(253, 203, 110, 0.1);
+      color: #fdcb6e;
+    }
+    .status-failed {
+      background: rgba(255, 107, 107, 0.1);
+      color: #ff6b6b;
+    }
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f0fdf4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #166534;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="flex min-h-screen">
+    <!-- Sidebar -->
+    <div class="admin-sidebar w-64 text-white flex-shrink-0">
+      <div class="p-6 border-b border-white/10">
+        <div class="flex items-center">
+          <i class="fas fa-chart-line text-green-400 text-2xl mr-3"></i>
+          <span class="text-xl font-bold">SalticsX Admin</span>
+        </div>
+      </div>
+      
+      <div class="p-4">
+        <a href="dashboard.html" class="admin-menu-item flex items-center p-3 text-gray-300 hover:text-white rounded">
+          <i class="fas fa-tachometer-alt mr-3"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="users.html" class="admin-menu-item flex items-center p-3 text-gray-300 hover:text-white rounded">
+          <i class="fas fa-users mr-3"></i>
+          <span>Users</span>
+        </a>
+        <a href="transactions.html" class="admin-menu-item active flex items-center p-3 text-white rounded">
+          <i class="fas fa-exchange-alt mr-3"></i>
+          <span>Transactions</span>
+        </a>
+        <a href="investments.html" class="admin-menu-item flex items-center p-3 text-gray-300 hover:text-white rounded">
+          <i class="fas fa-chart-line mr-3"></i>
+          <span>Investments</span>
+        </a>
+        <a href="withdrawals.html" class="admin-menu-item flex items-center p-3 text-gray-300 hover:text-white rounded">
+          <i class="fas fa-money-bill-wave mr-3"></i>
+          <span>Withdrawals</span>
+        </a>
+        <a href="settings.html" class="admin-menu-item flex items-center p-3 text-gray-300 hover:text-white rounded">
+          <i class="fas fa-cog mr-3"></i>
+          <span>Settings</span>
+        </a>
+        <a href="../index.html" class="admin-menu-item flex items-center p-3 text-gray-300 hover:text-white rounded mt-4">
+          <i class="fas fa-sign-out-alt mr-3"></i>
+          <span>Back to Site</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 overflow-auto">
+      <div class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="flex justify-between items-center p-4">
+          <h1 class="text-xl font-bold text-gray-800">Transaction <span class="gold-text">Management</span></h1>
+          <div class="flex items-center space-x-4">
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="fas fa-bell text-gray-400"></i>
+              </div>
+              <span class="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+            </div>
+            <div class="flex items-center">
+              <div class="user-avatar mr-2">AD</div>
+              <span class="font-medium">Admin User</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="p-6">
+        <!-- Filters and Search -->
+        <div class="bg-white rounded-xl shadow-sm p-4 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
+              <div class="relative">
+                <input type="text" id="searchTransactions" placeholder="Search transactions..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <i class="fas fa-search text-gray-400"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+              <select id="transactionType" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <option value="">All Types</option>
+                <option value="deposit">Deposit</option>
+                <option value="withdrawal">Withdrawal</option>
+                <option value="investment">Investment</option>
+                <option value="bonus">Bonus</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <select id="transactionStatus" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="failed">Failed</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+              <div class="grid grid-cols-2 gap-2">
+                <input type="date" id="startDate" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                <input type="date" id="endDate" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500">
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex justify-end mt-4 space-x-3">
+            <button id="resetFilters" class="px-4 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50">
+              Reset
+            </button>
+            <button id="applyFilters" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700">
+              Apply Filters
+            </button>
+          </div>
+        </div>
+        
+        <!-- Transactions Table -->
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                  <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reference</th>
+                  <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TXN1001</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="user-avatar mr-3">JD</div>
+                      <div>
+                        <div class="text-sm font-medium text-gray-900">John Doe</div>
+                        <div class="text-sm text-gray-500">#1001</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Deposit</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <span class="text-green-600 font-medium">+$1,250.00</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">PayPal</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="status-badge status-completed">Completed</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-05-15 14:30</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">PAYPAL12345</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-green-600 hover:text-green-900 mr-3">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TXN1002</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="user-avatar mr-3">JS</div>
+                      <div>
+                        <div class="text-sm font-medium text-gray-900">Jane Smith</div>
+                        <div class="text-sm text-gray-500">#1002</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Withdrawal</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <span class="text-red-600 font-medium">-$500.00</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Bank Transfer</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="status-badge status-pending">Pending</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-05-18 09:15</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">BANK98765</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-green-600 hover:text-green-900 mr-3">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TXN1003</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="user-avatar mr-3">RJ</div>
+                      <div>
+                        <div class="text-sm font-medium text-gray-900">Robert Johnson</div>
+                        <div class="text-sm text-gray-500">#1003</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Investment</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <span class="text-green-600 font-medium">+$75.50</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Gold Plan</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="status-badge status-completed">Completed</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-05-20 16:45</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">GOLDPLAN001</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-green-600 hover:text-green-900 mr-3">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TXN1004</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="user-avatar mr-3">SW</div>
+                      <div>
+                        <div class="text-sm font-medium text-gray-900">Sarah Williams</div>
+                        <div class="text-sm text-gray-500">#1004</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Deposit</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <span class="text-green-600 font-medium">+$2,000.00</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Crypto</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="status-badge status-failed">Failed</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-05-22 11:20</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">CRYPTO987</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-green-600 hover:text-green-900 mr-3">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="hover:bg-gray-50">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#TXN1005</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="flex items-center">
+                      <div class="user-avatar mr-3">MB</div>
+                      <div>
+                        <div class="text-sm font-medium text-gray-900">Michael Brown</div>
+                        <div class="text-sm text-gray-500">#1005</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Bonus</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <span class="text-green-600 font-medium">+$50.00</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">Referral</td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="status-badge status-completed">Completed</span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-05-25 08:10</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">REF1005</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <button class="text-green-600 hover:text-green-900 mr-3">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="text-gray-600 hover:text-gray-900">
+                      <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Pagination -->
+          <div class="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+            <div class="flex-1 flex justify-between sm:hidden">
+              <button class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Previous
+              </button>
+              <button class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Next
+              </button>
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm text-gray-700">
+                  Showing <span class="font-medium">1</span> to <span class="font-medium">5</span> of <span class="font-medium">24</span> results
+                </p>
+              </div>
+              <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                  <button class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <span class="sr-only">Previous</span>
+                    <i class="fas fa-chevron-left"></i>
+                  </button>
+                  <button aria-current="page" class="z-10 bg-green-50 border-green-500 text-green-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                    1
+                  </button>
+                  <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                    2
+                  </button>
+                  <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                    3
+                  </button>
+                  <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                    ...
+                  </span>
+                  <button class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                    8
+                  </button>
+                  <button class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                    <span class="sr-only">Next</span>
+                    <i class="fas fa-chevron-right"></i>
+                  </button>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Filter functionality
+    document.getElementById('applyFilters').addEventListener('click', function() {
+      const type = document.getElementById('transactionType').value;
+      const status = document.getElementById('transactionStatus').value;
+      const search = document.getElementById('searchTransactions').value;
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      
+      // In a real app, this would filter the table data
+      console.log('Applying filters:', { type, status, search, startDate, endDate });
+    });
+    
+    document.getElementById('resetFilters').addEventListener('click', function() {
+      document.getElementById('transactionType').value = '';
+      document.getElementById('transactionStatus').value = '';
+      document.getElementById('searchTransactions').value = '';
+      document.getElementById('startDate').value = '';
+      document.getElementById('endDate').value = '';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile | SalticsX</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #D4AF37; /* Gold */
+      --primary-light: #F5E6AB;
+      --primary-dark: #B7950B;
+      --secondary: #2E8B57; /* Green */
+      --secondary-light: #C1E1C1;
+      --secondary-dark: #1E6B47;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #f8f9fa;
+      --dark: #333;
+      --gray: #6c757d;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      background-color: #F5F7FA;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Header Styles */
+    .header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .nav-links a.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-links a.active:after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--primary);
+    }
+
+    .auth-buttons .btn {
+      padding: 8px 20px;
+      border-radius: 5px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Profile Section */
+    .profile-section {
+      padding: 40px 0;
+      min-height: calc(100vh - 80px);
+    }
+
+    .profile-header {
+      margin-bottom: 40px;
+    }
+
+    .profile-header h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--secondary-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .profile-header h1 i {
+      color: var(--primary);
+    }
+
+    .profile-header .subtitle {
+      color: var(--gray);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .profile-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 30px;
+    }
+
+    /* Sidebar Styles */
+    .profile-sidebar {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      height: fit-content;
+      border-top: 4px solid var(--primary);
+    }
+
+    .user-card {
+      text-align: center;
+      padding-bottom: 24px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--light);
+    }
+
+    .avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 600;
+      margin: 0 auto 16px;
+      position: relative;
+    }
+
+    .avatar-badge {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 28px;
+      height: 28px;
+      background: var(--secondary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+      border: 2px solid white;
+    }
+
+    .user-info h3 {
+      margin: 0 0 4px;
+      font-size: 1.25rem;
+      color: var(--dark);
+    }
+
+    .member-since {
+      color: var(--gray);
+      font-size: 0.875rem;
+      margin-bottom: 12px;
+    }
+
+    .account-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(46, 139, 87, 0.1);
+      color: var(--secondary-dark);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .account-status i {
+      color: var(--secondary);
+    }
+
+    .profile-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 6px;
+      color: var(--gray);
+      text-decoration: none;
+      transition: var(--transition);
+      font-weight: 500;
+    }
+
+    .nav-item i:first-child {
+      color: var(--primary);
+      width: 20px;
+      text-align: center;
+    }
+
+    .nav-item i:last-child {
+      color: var(--gray);
+      font-size: 0.8rem;
+    }
+
+    .nav-item:hover {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--primary);
+    }
+
+    .nav-item.active {
+      background: rgba(212, 175, 55, 0.1);
+      color: var(--primary);
+      font-weight: 600;
+      border-left: 3px solid var(--primary);
+    }
+
+    /* Main Content */
+    .profile-content {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 40px;
+      border-top: 4px solid var(--secondary);
+    }
+
+    .content-header {
+      margin-bottom: 32px;
+    }
+
+    .content-header h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--secondary-dark);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .content-header h2 i {
+      color: var(--primary);
+    }
+
+    .content-header p {
+      color: var(--gray);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .profile-form {
+      max-width: 800px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-bottom: 32px;
+    }
+
+    .form-group {
+      margin-bottom: 0;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      font-weight: 500;
+      color: var(--dark);
+      font-size: 0.9rem;
+    }
+
+    .form-group label i {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--light);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      transition: var(--transition);
+      background-color: #FAFAFA;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+
+    .select-wrapper {
+      position: relative;
+    }
+
+    .select-wrapper i {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray);
+      pointer-events: none;
+    }
+
+    .select-wrapper select {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--light);
+      border-radius: 6px;
+      font-family: 'Inter', sans-serif;
+      appearance: none;
+      background-color: #FAFAFA;
+      transition: var(--transition);
+    }
+
+    .select-wrapper select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 16px;
+      padding-top: 24px;
+      border-top: 1px solid var(--light);
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: var(--gray);
+      border: 1px solid var(--light);
+    }
+
+    .btn-secondary:hover {
+      background: #F5F5F5;
+      transform: translateY(-1px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .profile-layout {
+        grid-template-columns: 1fr;
+      }
+      
+      .profile-sidebar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      
+      .profile-nav {
+        width: 100%;
+      }
+      
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .form-group.full-width {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .nav-links {
+        margin: 15px 0;
+        flex-wrap: wrap;
+      }
+      
+      .auth-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .profile-content {
+        padding: 24px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <nav class="navbar">
+        <a href="index.html" class="logo">
+          <img src="assets/images/logo.png" alt="SalticsX">
+          <span>SalticsX</span>
+        </a>
+        
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="investments.html">Investments</a>
+          <a href="dashboard.html">Dashboard</a>
+          <a href="withdrawals.html">Withdrawals</a>
+          <a href="profile.html" class="active">Profile</a>
+        </div>
+        
+        <div class="auth-buttons">
+          <button id="logoutButton" class="btn btn-outline">Logout</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="profile-section">
+    <div class="container">
+      <div class="profile-header">
+        <h1><i class="fas fa-user-shield"></i> Account Profile</h1>
+        <p class="subtitle">Manage your personal information and security settings</p>
+      </div>
+      
+      <div class="profile-layout">
+        <!-- Side Navigation -->
+        <aside class="profile-sidebar">
+          <div class="user-card">
+            <div class="avatar">
+              <span>JD</span>
+              <div class="avatar-badge">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+            <div class="user-info">
+              <h3>John Doe</h3>
+              <p class="member-since">Premium Member since May 2023</p>
+              <div class="account-status">
+                <i class="fas fa-star"></i>
+                <span>Verified Account</span>
+              </div>
+            </div>
+          </div>
+          
+          <nav class="profile-nav">
+            <a href="#" class="nav-item active">
+              <i class="fas fa-user-tie"></i>
+              <span>Personal Info</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <a href="#" class="nav-item">
+              <i class="fas fa-shield-alt"></i>
+              <span>Security</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <a href="#" class="nav-item">
+              <i class="fas fa-credit-card"></i>
+              <span>Payment Methods</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <a href="#" class="nav-item">
+              <i class="fas fa-bell"></i>
+              <span>Notifications</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <a href="#" class="nav-item">
+              <i class="fas fa-chart-line"></i>
+              <span>Investment Stats</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+          </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="profile-content">
+          <div class="content-header">
+            <h2><i class="fas fa-id-card"></i> Personal Information</h2>
+            <p>Update your profile details and contact information</p>
+          </div>
+          
+          <form class="profile-form" id="profileForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="username">
+                  <i class="fas fa-at"></i>
+                  Username
+                </label>
+                <input type="text" id="username" value="johndoe" readonly>
+              </div>
+              
+              <div class="form-group">
+                <label for="email">
+                  <i class="fas fa-envelope"></i>
+                  Email Address
+                </label>
+                <input type="email" id="email" value="john.doe@example.com" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="firstName">
+                  <i class="fas fa-signature"></i>
+                  First Name
+                </label>
+                <input type="text" id="firstName" value="John" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="lastName">
+                  <i class="fas fa-signature"></i>
+                  Last Name
+                </label>
+                <input type="text" id="lastName" value="Doe" required>
+              </div>
+              
+              <div class="form-group full-width">
+                <label for="country">
+                  <i class="fas fa-globe"></i>
+                  Country
+                </label>
+                <div class="select-wrapper">
+                  <select id="country" required>
+                    <option value="">Select Country</option>
+                    <option value="US">United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="CA" selected>Canada</option>
+                    <option value="AU">Australia</option>
+                    <option value="DE">Germany</option>
+                    <option value="FR">France</option>
+                  </select>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+              </div>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" id="discardBtn" class="btn btn-secondary">Discard Changes</button>
+              <button type="submit" class="btn btn-primary">Update Profile</button>
+            </div>
+          </form>
+        </main>
+      </div>
+    </div>
+  </section>
+
+  <script src="assets/js/main.js"></script>
+  <script src="assets/js/auth.js"></script>
+  <script>
+  document.getElementById('profileForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const formData = {
+    firstName: document.getElementById('firstName').value,
+    lastName: document.getElementById('lastName').value,
+    email: document.getElementById('email').value,
+    country: document.getElementById('country').value
+  };
+  
+  try {
+    const response = await fetch('/api/users/profile', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify(formData)
+    });
+    
+    const data = await response.json();
+    
+    if (response.ok) {
+      alert('Profile updated successfully!');
+      // Update displayed user info
+      document.querySelector('.user-info h3').textContent = `${data.firstName} ${data.lastName}`;
+      document.querySelector('.avatar span').textContent = 
+        `${data.firstName.charAt(0)}${data.lastName.charAt(0)}`;
+    } else {
+      throw new Error(data.message || 'Failed to update profile');
+    }
+  } catch (error) {
+    alert(error.message);
+  }
+});
+    // Form submission handler
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get form values
+      const email = document.getElementById('email').value;
+      const firstName = document.getElementById('firstName').value;
+      const lastName = document.getElementById('lastName').value;
+      const country = document.getElementById('country').value;
+      
+      // Simple validation
+      if (!email || !firstName || !lastName || !country) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      // Here you would typically send the data to a server
+      // For this example, we'll just show a success message
+      alert('Profile updated successfully!');
+      
+      // You could also update the user info in the sidebar here
+      document.querySelector('.user-info h3').textContent = `${firstName} ${lastName}`;
+      document.querySelector('.avatar span').textContent = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+    });
+    
+    // Discard changes button
+    document.getElementById('discardBtn').addEventListener('click', function() {
+      // Reset form to original values
+      document.getElementById('email').value = 'john.doe@example.com';
+      document.getElementById('firstName').value = 'John';
+      document.getElementById('lastName').value = 'Doe';
+      document.getElementById('country').value = 'CA';
+    });
+    
+    // Navigation menu active state
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        navItems.forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Here you would typically load different content based on the selected tab
+        // For this example, we'll just change the content header
+        const contentHeader = document.querySelector('.content-header h2');
+        const contentSubtitle = document.querySelector('.content-header p');
+        
+        switch(this.querySelector('span').textContent) {
+          case 'Security':
+            contentHeader.innerHTML = '<i class="fas fa-shield-alt"></i> Security Settings';
+            contentSubtitle.textContent = 'Manage your password and security preferences';
+            break;
+          case 'Payment Methods':
+            contentHeader.innerHTML = '<i class="fas fa-credit-card"></i> Payment Methods';
+            contentSubtitle.textContent = 'Add or update your payment information';
+            break;
+          case 'Notifications':
+            contentHeader.innerHTML = '<i class="fas fa-bell"></i> Notification Preferences';
+            contentSubtitle.textContent = 'Configure how you receive notifications';
+            break;
+          case 'Investment Stats':
+            contentHeader.innerHTML = '<i class="fas fa-chart-line"></i> Investment Statistics';
+            contentSubtitle.textContent = 'View your investment performance and history';
+            break;
+          default:
+            contentHeader.innerHTML = '<i class="fas fa-id-card"></i> Personal Information';
+            contentSubtitle.textContent = 'Update your profile details and contact information';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

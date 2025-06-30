@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SalticsX - Global Investment Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+   <link rel="stylesheet" href="tooltip.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+            },
+            gold: {
+              400: '#eab308',
+              500: '#ca8a04',
+            },
+            dark: {
+              800: '#1e293b',
+              900: '#0f172a',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Playfair Display', 'serif'],
+          },
+          backgroundImage: {
+            'world-map': "url('https://images.unsplash.com/photo-1483728642387-6c3bdd6c93e5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')",
+            'gradient-radial': 'radial-gradient(circle, rgba(202,138,4,0.1) 0%, rgba(34,197,94,0.05) 50%, rgba(255,255,255,1) 100%)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+    }
+    .mobile-menu.open {
+      max-height: 500px;
+    }
+    .gold-border {
+      position: relative;
+    }
+    .gold-border:after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 0;
+      width: 50px;
+      height: 3px;
+      background: linear-gradient(90deg, #eab308, #22c55e);
+    }
+    .globe-spin {
+      animation: spin 20s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body class="font-sans bg-gray-50 text-gray-800">
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-50 border-b border-gray-100">
+    <div class="container mx-auto px-4 py-3">
+      <nav class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <img src="assets/images/logo.png" alt="SalticsX" class="h-8">
+          <span class="text-xl font-bold text-dark-900 font-serif">SalticsX</span>
+        </div>
+        
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center space-x-8">
+          <div class="flex space-x-8">
+            <a href="index.html" class="text-gray-600 hover:text-primary-600 font-medium gold-border">Home</a>
+            <a href="investments.html" class="text-gray-600 hover:text-primary-600 font-medium gold-border">Investments</a>
+            <a href="dashboard.html" class="text-gray-600 hover:text-primary-600 font-medium gold-border">Dashboard</a>
+            <a href="#" class="text-gray-600 hover:text-primary-600 font-medium gold-border">About</a>
+            <a href="#" class="text-gray-600 hover:text-primary-600 font-medium gold-border">Contact</a>
+          </div>
+          <div class="flex space-x-4 ml-6">
+            <a href="login.html" class="px-4 py-2 border border-gold-400 text-gold-500 rounded-md hover:bg-gold-50 font-medium">Login</a>
+            <a href="register.html" class="px-4 py-2 bg-gradient-to-r from-gold-400 to-primary-500 text-white rounded-md hover:opacity-90 font-medium shadow-md">Register</a>
+          </div>
+        </div>
+        
+        <!-- Mobile menu button -->
+        <button id="mobile-menu-button" class="md:hidden text-gray-600 focus:outline-none">
+          <i class="fas fa-bars text-2xl"></i>
+        </button>
+      </nav>
+      
+      <!-- Mobile Navigation -->
+      <div id="mobile-menu" class="mobile-menu md:hidden">
+        <div class="pt-4 pb-2 space-y-2">
+          <a href="index.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Home</a>
+          <a href="investments.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Investments</a>
+          <a href="dashboard.html" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Dashboard</a>
+          <a href="#" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">About</a>
+          <a href="#" class="block px-3 py-2 rounded-md text-gray-700 hover:bg-gray-100">Contact</a>
+          <div class="pt-2 space-y-2">
+            <a href="auth/login.html" class="block px-3 py-2 text-center border border-gold-400 text-gold-500 rounded-md hover:bg-gold-50">Login</a>
+            <a href="auth/register.html" class="block px-3 py-2 text-center bg-gradient-to-r from-gold-400 to-primary-500 text-white rounded-md hover:opacity-90">Register</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-dark-900 to-dark-800 text-white py-24 overflow-hidden">
+    <div class="absolute inset-0 bg-world-map opacity-10 bg-cover bg-center"></div>
+    <div class="absolute inset-0 bg-gradient-radial"></div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <h1 class="text-4xl md:text-6xl font-bold mb-6 font-serif leading-tight">Global Investments, <span class="text-gold-400">Golden</span> Opportunities</h1>
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Join our worldwide network of investors earning premium returns across 120+ countries with our exclusive investment platform.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="register.html" class="px-8 py-4 bg-gradient-to-r from-gold-400 to-primary-500 hover:from-gold-500 hover:to-primary-600 rounded-md font-medium text-lg shadow-lg transform transition hover:scale-105 flex items-center justify-center space-x-2">
+            <span>Get Started</span>
+            <i class="fas fa-arrow-right"></i>
+          </a>
+          <a href="investments.html" class="px-8 py-4 border border-white/30 bg-white/5 hover:bg-white/10 rounded-md font-medium text-lg backdrop-blur-sm flex items-center justify-center space-x-2">
+            <i class="fas fa-chart-line"></i>
+            <span>Explore Investments</span>
+          </a>
+        </div>
+      </div>
+      
+      <div class="mt-16 grid md:grid-cols-4 gap-8 text-center">
+        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/10">
+          <h3 class="text-3xl font-bold text-gold-400 mb-2">$1.2B+</h3>
+          <p class="text-gray-300">Assets Under Management</p>
+        </div>
+        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/10">
+          <h3 class="text-3xl font-bold text-gold-400 mb-2">120+</h3>
+          <p class="text-gray-300">Countries</p>
+        </div>
+        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/10">
+          <h3 class="text-3xl font-bold text-gold-400 mb-2">98.7%</h3>
+          <p class="text-gray-300">Client Satisfaction</p>
+        </div>
+        <div class="bg-white/10 p-6 rounded-xl backdrop-blur-sm border border-white/10">
+          <h3 class="text-3xl font-bold text-gold-400 mb-2">24/7</h3>
+          <p class="text-gray-300">Global Support</p>
+        </div>
+      </div>
+      
+      <div class="mt-12 flex justify-center">
+        <div class="w-24 h-24 rounded-full border-4 border-gold-400/30 border-t-gold-400 globe-spin flex items-center justify-center">
+          <i class="fas fa-globe text-3xl text-gold-400"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-20 bg-gradient-to-b from-white to-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-gold-500 font-medium mb-2 inline-block">PREMIUM INVESTMENT SOLUTIONS</span>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 font-serif">Global Market <span class="text-primary-500">Leadership</span></h2>
+        <p class="text-gray-600">We provide exclusive access to high-growth investment opportunities across global markets with institutional-grade security.</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-100 hover:border-primary-100">
+          <div class="w-14 h-14 bg-gradient-to-br from-gold-400 to-primary-500 rounded-lg flex items-center justify-center mb-6 text-white">
+            <i class="fas fa-chart-line text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-serif">Premium Returns</h3>
+          <p class="text-gray-600">Access our elite investment portfolios with potential returns of 18-35% annually, backed by real assets.</p>
+          <a href="#" class="mt-4 inline-flex items-center text-primary-500 hover:text-primary-600 font-medium">
+            Learn more <i class="fas fa-chevron-right ml-1 text-sm"></i>
+          </a>
+        </div>
+        
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-100 hover:border-primary-100">
+          <div class="w-14 h-14 bg-gradient-to-br from-gold-400 to-primary-500 rounded-lg flex items-center justify-center mb-6 text-white">
+            <i class="fas fa-shield-alt text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-serif">Global Security</h3>
+          <p class="text-gray-600">Military-grade encryption and multi-jurisdictional asset protection for complete peace of mind.</p>
+          <a href="#" class="mt-4 inline-flex items-center text-primary-500 hover:text-primary-600 font-medium">
+            Learn more <i class="fas fa-chevron-right ml-1 text-sm"></i>
+          </a>
+        </div>
+        
+        <div class="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition border border-gray-100 hover:border-primary-100">
+          <div class="w-14 h-14 bg-gradient-to-br from-gold-400 to-primary-500 rounded-lg flex items-center justify-center mb-6 text-white">
+            <i class="fas fa-globe-americas text-2xl"></i>
+          </div>
+          <h3 class="text-xl font-semibold mb-3 font-serif">Worldwide Access</h3>
+          <p class="text-gray-600">Invest seamlessly across 120+ countries with our localized support and multi-currency accounts.</p>
+          <a href="#" class="mt-4 inline-flex items-center text-primary-500 hover:text-primary-600 font-medium">
+            Learn more <i class="fas fa-chevron-right ml-1 text-sm"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Markets Section -->
+  <section class="py-20 bg-gray-900 text-white">
+    <div class="container mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 mb-10 md:mb-0 md:pr-10">
+          <span class="text-gold-400 font-medium mb-2 inline-block">GLOBAL REACH</span>
+          <h2 class="text-3xl md:text-4xl font-bold mb-6 font-serif">Invest Across <span class="text-primary-400">Continents</span></h2>
+          <p class="text-gray-300 mb-8">Our platform gives you direct access to emerging and established markets worldwide, with localized expertise and on-the-ground intelligence.</p>
+          
+          <div class="space-y-6">
+            <div class="flex items-start">
+              <div class="flex-shrink-0 mt-1">
+                <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white">
+                  <i class="fas fa-check"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-lg">North America</h4>
+                <p class="text-gray-400">Tech startups, real estate, and green energy projects</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 mt-1">
+                <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white">
+                  <i class="fas fa-check"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-lg">Asia Pacific</h4>
+                <p class="text-gray-400">Emerging markets, manufacturing, and infrastructure</p>
+              </div>
+            </div>
+            
+            <div class="flex items-start">
+              <div class="flex-shrink-0 mt-1">
+                <div class="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center text-white">
+                  <i class="fas fa-check"></i>
+                </div>
+              </div>
+              <div class="ml-4">
+                <h4 class="font-semibold text-lg">Europe</h4>
+                <p class="text-gray-400">Fintech, renewable energy, and luxury assets</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="md:w-1/2 relative">
+          <div class="bg-gradient-to-br from-gold-400/20 to-primary-500/20 rounded-2xl p-1">
+            <img src="https://images.unsplash.com/photo-1534957753291-64d667ce2927?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Global Markets" class="rounded-xl shadow-2xl">
+          </div>
+          <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg w-32">
+            <div class="text-gold-500 text-3xl font-bold">85%</div>
+            <div class="text-xs text-gray-600">Growth Markets</div>
+          </div>
+          <div class="absolute -top-6 -right-6 bg-primary-500 p-4 rounded-lg shadow-lg w-32 text-white">
+            <div class="text-3xl font-bold">120+</div>
+            <div class="text-xs">Countries</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-20 bg-gradient-to-b from-gray-50 to-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-gold-500 font-medium mb-2 inline-block">GLOBAL INVESTORS</span>
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 font-serif">Trusted by <span class="text-primary-500">Institutions</span> & Individuals</h2>
+        <p class="text-gray-600">Hear from our global community of investors who trust SalticsX with their capital growth.</p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden">
+              <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Investor" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Sophia Müller</h4>
+              <p class="text-gray-500 text-sm">Zurich, Switzerland</p>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"SalticsX has transformed how I manage my family's wealth. The global diversification options are unparalleled in private banking."</p>
+          <div class="flex items-center">
+            <div class="flex mr-4 text-gold-400">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="text-sm text-gray-500">Private Banking</div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden">
+              <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Investor" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Raj Patel</h4>
+              <p class="text-gray-500 text-sm">Mumbai, India</p>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"As a fund manager, I appreciate SalticsX's institutional-grade platform that gives me access to deals I can't find elsewhere."</p>
+          <div class="flex items-center">
+            <div class="flex mr-4 text-gold-400">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star-half-alt"></i>
+            </div>
+            <div class="text-sm text-gray-500">Hedge Fund</div>
+          </div>
+        </div>
+        
+        <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+          <div class="flex items-center mb-6">
+            <div class="w-12 h-12 rounded-full bg-gray-200 mr-4 overflow-hidden">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Investor" class="w-full h-full object-cover">
+            </div>
+            <div>
+              <h4 class="font-semibold">Aisha Johnson</h4>
+              <p class="text-gray-500 text-sm">Dubai, UAE</p>
+            </div>
+          </div>
+          <p class="text-gray-600 mb-6">"The Middle East office provided exceptional local support while giving me global investment opportunities. Truly world-class."</p>
+          <div class="flex items-center">
+            <div class="flex mr-4 text-gold-400">
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="text-sm text-gray-500">Family Office</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-12 flex justify-center">
+        <div class="flex space-x-2">
+          <img src="https://logo.clearbit.com/jpmorgan.com" alt="JPMorgan" class="h-8 opacity-60 hover:opacity-100 transition">
+          <img src="https://logo.clearbit.com/blackrock.com" alt="Blackrock" class="h-8 opacity-60 hover:opacity-100 transition">
+          <img src="https://logo.clearbit.com/ubs.com" alt="UBS" class="h-8 opacity-60 hover:opacity-100 transition">
+          <img src="https://logo.clearbit.com/credit-suisse.com" alt="Credit Suisse" class="h-8 opacity-60 hover:opacity-100 transition">
+          <img src="https://logo.clearbit.com/hsbc.com" alt="HSBC" class="h-8 opacity-60 hover:opacity-100 transition">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-gradient-to-r from-dark-900 to-dark-800 text-white relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10 bg-world-map bg-cover bg-center"></div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <div class="w-20 h-20 bg-gradient-to-br from-gold-400 to-primary-500 rounded-full flex items-center justify-center mx-auto mb-6 text-white shadow-lg">
+          <i class="fas fa-globe text-2xl"></i>
+        </div>
+        <h2 class="text-3xl md:text-4xl font-bold mb-6 font-serif">Join Our Global <span class="text-gold-400">Investment</span> Community</h2>
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">Start your journey with SalticsX today and gain access to exclusive investment opportunities worldwide.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="auth/register.html" class="px-8 py-4 bg-gradient-to-r from-gold-400 to-primary-500 hover:from-gold-500 hover:to-primary-600 rounded-md font-medium text-lg shadow-lg transform transition hover:scale-105">
+            Open Account
+          </a>
+          <a href="#" class="px-8 py-4 bg-white text-dark-800 hover:bg-gray-100 rounded-md font-medium text-lg shadow-lg transform transition hover:scale-105">
+            Schedule Consultation
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 pt-20 pb-10">
+    <div class="container mx-auto px-4">
+      <div class="grid md:grid-cols-4 gap-10 mb-16">
+        <div>
+          <div class="flex items-center space-x-2 mb-6">
+            <img src="assets/images/logo.png" alt="SalticsX" class="h-8">
+            <span class="text-xl font-bold text-white font-serif">SalticsX</span>
+          </div>
+          <p class="mb-6">Global investment platform providing premium access to high-growth opportunities across 120+ countries.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gold-500 flex items-center justify-center text-white transition">
+              <i class="fab fa-twitter"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gold-500 flex items-center justify-center text-white transition">
+              <i class="fab fa-linkedin-in"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gold-500 flex items-center justify-center text-white transition">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="#" class="w-10 h-10 rounded-full bg-gray-800 hover:bg-gold-500 flex items-center justify-center text-white transition">
+              <i class="fab fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-white font-semibold text-lg mb-6 font-serif">Global Offices</h3>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt text-gold-400 mt-1 mr-3"></i>
+              <span>New York, USA</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt text-gold-400 mt-1 mr-3"></i>
+              <span>London, UK</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt text-gold-400 mt-1 mr-3"></i>
+              <span>Singapore</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-map-marker-alt text-gold-400 mt-1 mr-3"></i>
+              <span>Dubai, UAE</span>
+            </li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-white font-semibold text-lg mb-6 font-serif">Quick Links</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:text-gold-400 transition">Investment Strategies</a></li>
+            <li><a href="#" class="hover:text-gold-400 transition">Market Research</a></li>
+            <li><a href="#" class="hover:text-gold-400 transition">Wealth Management</a></li>
+            <li><a href="#" class="hover:text-gold-400 transition">Private Equity</a></li>
+            <li><a href="#" class="hover:text-gold-400 transition">Sustainable Investing</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-white font-semibold text-lg mb-6 font-serif">Contact Us</h3>
+          <ul class="space-y-3">
+            <li class="flex items-start">
+              <i class="fas fa-phone-alt text-gold-400 mt-1 mr-3"></i>
+              <span>+1 (800) 123-4567</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-envelope text-gold-400 mt-1 mr-3"></i>
+              <span>info@salticsx.com</span>
+            </li>
+            <li class="flex items-start">
+              <i class="fas fa-headset text-gold-400 mt-1 mr-3"></i>
+              <span>24/7 Global Support</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="border-t border-gray-800 pt-8">
+        <div class="flex flex-col md:flex-row justify-between items-center">
+          <p class="text-gray-500 mb-4 md:mb-0">&copy; 2023 SalticsX Global. All rights reserved.</p>
+          <div class="flex space-x-6">
+            <a href="#" class="text-gray-500 hover:text-gold-400 transition">Terms</a>
+            <a href="#" class="text-gray-500 hover:text-gold-400 transition">Privacy</a>
+            <a href="#" class="text-gray-500 hover:text-gold-400 transition">Security</a>
+            <a href="#" class="text-gray-500 hover:text-gold-400 transition">Disclosures</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile menu toggle
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+    });
+    
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({
+            behavior: 'smooth'
+          });
+        }
+      });
+    });
+  </script>
+</body>
+</html>

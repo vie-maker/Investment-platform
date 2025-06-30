@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | SalticsX</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+            secondary: {
+              400: '#facc15',
+              500: '#eab308',
+              600: '#ca8a04',
+            },
+            dark: {
+              800: '#1e293b',
+              900: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f8fafc;
+    }
+    .gold-text {
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+      background-image: linear-gradient(to right, #facc15, #ca8a04);
+    }
+    .header-gradient {
+      background: linear-gradient(135deg, #14532d 0%, #0f172a 100%);
+    }
+    .nav-link {
+      position: relative;
+    }
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #22c55e;
+      transition: width 0.3s;
+    }
+    .nav-link:hover:after {
+      width: 100%;
+    }
+    .active-nav:after {
+      width: 100%;
+    }
+    .stat-card {
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    }
+    .transaction-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .status-badge {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-completed {
+      background: rgba(0, 184, 148, 0.1);
+      color: #00b894;
+    }
+    .status-pending {
+      background: rgba(253, 203, 110, 0.1);
+      color: #fdcb6e;
+    }
+    .status-failed {
+      background: rgba(255, 107, 107, 0.1);
+      color: #ff6b6b;
+    }
+    .savings-card {
+      background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+      color: white;
+    }
+    .referral-card {
+      background: linear-gradient(135deg, #7e22ce 0%, #9333ea 100%);
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+
+  <!-- Header -->
+  <header class="header-gradient shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4">
+      <nav class="flex items-center justify-between">
+        <a href="index.html" class="flex items-center text-xl font-bold text-white">
+          <i class="fas fa-chart-line text-green-400 mr-2"></i>
+          <span>SalticsX</span>
+        </a>
+        
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="index.html" class="nav-link text-gray-300 hover:text-white">Home</a>
+          <a href="investments.html" class="nav-link text-gray-300 hover:text-white">Investments</a>
+          <a href="dashboard.html" class="nav-link active-nav text-white">Dashboard</a>
+          
+          <a href="profile.html" class="nav-link text-gray-300 hover:text-white">Profile</a>
+        </div>
+        
+        <div class="flex items-center space-x-4">
+          <div class="hidden md:flex items-center space-x-2">
+            <span class="text-gray-300">Welcome,</span>
+            <span class="text-white font-medium">John D.</span>
+          </div>
+          <button id="logoutButton" class="bg-transparent border border-green-500 text-green-400 hover:bg-green-500/10 px-4 py-2 rounded-md font-medium transition">
+            Logout
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Dashboard Content -->
+  <main class="container mx-auto px-4 py-8">
+    <!-- Quick Stats -->
+    <section class="mb-12">
+      <h1 class="text-3xl font-bold text-gray-900 mb-6">Dashboard <span class="gold-text">Overview</span></h1>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <!-- Account Balance -->
+        <div class="stat-card bg-white rounded-xl p-6">
+          <div class="flex items-center">
+            <div class="transaction-icon bg-green-100 text-green-600 mr-4">
+              <i class="fas fa-wallet"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900" id="userBalance">$5,420.00</h3>
+              <p class="text-gray-600">Account Balance</p>
+            </div>
+          </div>
+          <div class="mt-4 flex space-x-2">
+            <button onclick="openDepositModal()" class="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 rounded-lg transition font-medium">
+              Deposit
+            </button>
+            <button onclick="openWithdrawalModal()" class="flex-1 bg-white border border-green-500 text-green-500 hover:bg-green-50 py-2 rounded-lg transition font-medium">
+              Withdraw
+            </button>
+          </div>
+        </div>
+        
+        <!-- Total Earnings -->
+        <div class="stat-card bg-white rounded-xl p-6">
+          <div class="flex items-center">
+            <div class="transaction-icon bg-blue-100 text-blue-600 mr-4">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900">$1,250.00</h3>
+              <p class="text-gray-600">Total Earnings</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Active Investments -->
+        <div class="stat-card bg-white rounded-xl p-6">
+          <div class="flex items-center">
+            <div class="transaction-icon bg-yellow-100 text-yellow-600 mr-4">
+              <i class="fas fa-coins"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900">3</h3>
+              <p class="text-gray-600">Active Investments</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Referral Earnings -->
+        <div class="stat-card bg-white rounded-xl p-6">
+          <div class="flex items-center">
+            <div class="transaction-icon bg-purple-100 text-purple-600 mr-4">
+              <i class="fas fa-users"></i>
+            </div>
+            <div>
+              <h3 class="text-2xl font-bold text-gray-900">$420.00</h3>
+              <p class="text-gray-600">Referral Earnings</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Balance Chart -->
+      
+    <!-- Savings & Referral Section -->
+    <section class="mb-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Savings Plan -->
+        <div class="savings-card rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-white">Savings Plan</h2>
+            <span class="bg-blue-100 text-blue-800 text-sm font-bold px-3 py-1 rounded-full">5% APY</span>
+          </div>
+          
+          <div class="space-y-4 text-blue-100">
+            <div class="flex justify-between items-center">
+              <span>Current Savings:</span>
+              <span class="font-bold text-white">$2,000.00</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Earned Interest:</span>
+              <span class="font-bold text-white">$45.20</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Next Payout:</span>
+              <span class="font-bold text-white">July 30, 2023</span>
+            </div>
+          </div>
+          
+          <div class="mt-6 flex space-x-3">
+            <button onclick="openSavingsModal('deposit')" class="flex-1 bg-white hover:bg-gray-100 text-blue-600 py-2 rounded-lg transition font-medium">
+              Add Funds
+            </button>
+            <button onclick="openSavingsModal('withdraw')" class="flex-1 bg-transparent border border-white text-white hover:bg-white/10 py-2 rounded-lg transition font-medium">
+              Withdraw
+            </button>
+          </div>
+        </div>
+        
+        <!-- Referral Program -->
+        <div class="referral-card rounded-xl shadow-md p-6">
+          <div class="flex justify-between items-center mb-6">
+            <h2 class="text-xl font-bold text-white">Referral Program</h2>
+            <span class="bg-purple-100 text-purple-800 text-sm font-bold px-3 py-1 rounded-full">10% Bonus</span>
+          </div>
+          
+          <div class="space-y-4 text-purple-100">
+            <div class="flex justify-between items-center">
+              <span>Your Referral Code:</span>
+              <span class="font-bold text-white">SALTICSX123</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Total Referrals:</span>
+              <span class="font-bold text-white">8</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span>Earned Bonuses:</span>
+              <span class="font-bold text-white">$420.00</span>
+            </div>
+          </div>
+          
+          <div class="mt-6">
+            <button onclick="copyReferralCode()" class="w-full bg-white hover:bg-gray-100 text-purple-600 py-2 rounded-lg transition font-medium">
+              Copy Referral Link
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Transactions -->
+    <section class="mb-12">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Recent <span class="gold-text">Transactions</span></h2>
+        <a href="#" class="text-green-600 hover:text-green-700 font-medium">
+          View All <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-md p-6">
+        <div class="space-y-4">
+          <div class="flex items-center p-4 hover:bg-gray-50 rounded-lg transition">
+            <div class="transaction-icon bg-green-100 text-green-600 mr-4">
+              <i class="fas fa-arrow-down"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Deposit via PayPal</p>
+              <p class="text-sm text-gray-500">Today, 10:30 AM</p>
+            </div>
+            <div class="text-green-600 font-medium">+$500.00</div>
+          </div>
+          
+          <div class="flex items-center p-4 hover:bg-gray-50 rounded-lg transition">
+            <div class="transaction-icon bg-blue-100 text-blue-600 mr-4">
+              <i class="fas fa-coins"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Investment Profit</p>
+              <p class="text-sm text-gray-500">Yesterday, 2:15 PM</p>
+            </div>
+            <div class="text-green-600 font-medium">+$75.50</div>
+          </div>
+          
+          <div class="flex items-center p-4 hover:bg-gray-50 rounded-lg transition">
+            <div class="transaction-icon bg-purple-100 text-purple-600 mr-4">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Referral Bonus</p>
+              <p class="text-sm text-gray-500">June 15, 9:45 AM</p>
+            </div>
+            <div class="text-green-600 font-medium">+$50.00</div>
+          </div>
+          
+          <div class="flex items-center p-4 hover:bg-gray-50 rounded-lg transition">
+            <div class="transaction-icon bg-red-100 text-red-600 mr-4">
+              <i class="fas fa-arrow-up"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Withdrawal to PayPal</p>
+              <p class="text-sm text-gray-500">June 10, 4:20 PM</p>
+            </div>
+            <div class="text-red-600 font-medium">-$300.00</div>
+          </div>
+          
+          <div class="flex items-center p-4 hover:bg-gray-50 rounded-lg transition">
+            <div class="transaction-icon bg-blue-100 text-blue-600 mr-4">
+              <i class="fas fa-piggy-bank"></i>
+            </div>
+            <div class="flex-1">
+              <p class="font-medium">Savings Interest</p>
+              <p class="text-sm text-gray-500">June 1, 12:00 AM</p>
+            </div>
+            <div class="text-green-600 font-medium">+$25.20</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Active Investments -->
+    <section class="mb-12">
+      <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Active <span class="gold-text">Investments</span></h2>
+        <a href="investments.html" class="text-green-600 hover:text-green-700 font-medium">
+          Invest More <i class="fas fa-arrow-right ml-1"></i>
+        </a>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Plan</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Daily Profit</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Days Left</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Earned</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 bg-green-100 rounded-full flex items-center justify-center text-green-600">
+                      <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">VIP Plan</div>
+                      <div class="text-sm text-gray-500">7% Daily</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$2,500.00</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$175.00</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">12</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$1,400.00</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    Active
+                  </span>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600">
+                      <i class="fas fa-medal"></i>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">Gold Plan</div>
+                      <div class="text-sm text-gray-500">5% Daily</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$1,000.00</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$50.00</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$1,250.00</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    Active
+                  </span>
+                </td>
+              </tr>
+              <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600">
+                      <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm font-medium text-gray-900">Silver Plan</div>
+                      <div class="text-sm text-gray-500">3% Daily</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$500.00</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$15.00</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">18</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">$300.00</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    Active
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Deposit Modal -->
+  <div id="depositModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold text-gray-800">Deposit Funds</h3>
+          <button onclick="closeDepositModal()" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-700 mb-2">Amount ($)</label>
+            <input type="number" id="modalDepositAmount" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter amount">
+            <p class="text-sm text-gray-500 mt-1">Minimum deposit: $20.00</p>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Payment Method</label>
+            <div class="flex items-center p-4 border border-gray-300 rounded-lg">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Paypal_2014_logo.png" alt="PayPal" class="h-6 mr-3">
+              <span>PayPal</span>
+            </div>
+          </div>
+          <div id="paypal-deposit-button-container" class="pt-2"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdrawal Modal -->
+  <div id="withdrawalModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold text-gray-800">Withdraw Funds</h3>
+          <button onclick="closeWithdrawalModal()" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-700 mb-2">Amount ($)</label>
+            <input type="number" id="withdrawalAmount" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter amount">
+            <p class="text-sm text-gray-500 mt-1">Available balance: $5,420.00</p>
+          </div>
+          <div>
+            <label class="block text-gray-700 mb-2">Withdrawal Method</label>
+            <select id="withdrawalMethod" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+              <option value="paypal">PayPal</option>
+              <option value="bank">Bank Transfer</option>
+              <option value="crypto">Cryptocurrency</option>
+            </select>
+          </div>
+          <div id="paypalEmailContainer" class="hidden">
+            <label class="block text-gray-700 mb-2">PayPal Email</label>
+            <input type="email" id="paypalEmail" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="your@email.com" value="john.doe@example.com">
+          </div>
+          <div id="bankDetailsContainer" class="hidden">
+            <label class="block text-gray-700 mb-2">Bank Account Details</label>
+            <textarea id="bankDetails" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" rows="3" placeholder="Account number, bank name, etc."></textarea>
+          </div>
+          <div id="cryptoWalletContainer" class="hidden">
+            <label class="block text-gray-700 mb-2">Wallet Address</label>
+            <input type="text" id="cryptoWallet" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="0x...">
+          </div>
+          <button onclick="processWithdrawal()" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition font-medium">
+            Request Withdrawal
+          </button>
+          <p class="text-sm text-gray-500">Processing time: 1-3 business days</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Savings Modal -->
+  <div id="savingsModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-xl font-bold text-gray-800" id="savingsModalTitle">Add to Savings</h3>
+          <button onclick="closeSavingsModal()" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-700 mb-2">Amount ($)</label>
+            <input type="number" id="savingsAmount" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter amount">
+            <p class="text-sm text-gray-500 mt-1" id="savingsMaxLimit">Maximum savings limit: $100,000</p>
+          </div>
+          <div id="paypal-savings-button-container" class="pt-2"></div>
+          <button id="confirmSavingsBtn" class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition font-medium">
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark-900 text-gray-400 py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-6 flex items-center">
+            <i class="fas fa-chart-line text-green-500 mr-2"></i>
+            SalticsX
+          </h3>
+          <p class="mb-4">Premium investment solutions for discerning clients.</p>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-400 hover:text-green-500"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="text-gray-400 hover:text-green-500"><i class="fab fa-linkedin"></i></a>
+            <a href="#" class="text-gray-400 hover:text-green-500"><i class="fab fa-facebook"></i></a>
+          </div>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-6">Company</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:text-green-500 transition">About Us</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Careers</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Blog</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Press</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-6">Legal</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="hover:text-green-500 transition">Terms of Service</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Privacy Policy</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Compliance</a></li>
+            <li><a href="#" class="hover:text-green-500 transition">Regulations</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-lg font-semibold text-white mb-6">Contact</h3>
+          <ul class="space-y-3">
+            <li class="flex items-center">
+              <i class="fas fa-map-marker-alt text-green-500 mr-3 w-4"></i>
+              <span>123 Financial District, New York, NY 10005</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-envelope text-green-500 mr-3 w-4"></i>
+              <span>support@salticsx.com</span>
+            </li>
+            <li class="flex items-center">
+              <i class="fas fa-phone-alt text-green-500 mr-3 w-4"></i>
+              <span>+1 (555) 123-4567</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="pt-8 border-t border-gray-800 text-center text-gray-500">
+        <p>&copy; 2023 SalticsX. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+      
+    // Initialize Chart
+    document.addEventListener('DOMContentLoaded', function() {
+      const ctx = document.getElementById('userBalanceChart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [{
+            label: 'Account Balance',
+            data: [1000, 1500, 2200, 3000, 4000, 5420],
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+            borderWidth: 2,
+            tension: 0.3,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+
+      // Handle withdrawal method selection
+      document.getElementById('withdrawalMethod').addEventListener('change', function() {
+        const method = this.value;
+        document.getElementById('paypalEmailContainer').classList.add('hidden');
+        document.getElementById('bankDetailsContainer').classList.add('hidden');
+        document.getElementById('cryptoWalletContainer').classList.add('hidden');
+        
+        if (method === 'paypal') {
+          document.getElementById('paypalEmailContainer').classList.remove('hidden');
+        } else if (method === 'bank') {
+          document.getElementById('bankDetailsContainer').classList.remove('hidden');
+        } else if (method === 'crypto') {
+          document.getElementById('cryptoWalletContainer').classList.remove('hidden');
+        }
+      });
+    });
+
+    // Modal Functions
+    function openDepositModal() {
+      document.getElementById('depositModal').classList.remove('hidden');
+      // Render PayPal button
+      paypal.Buttons({
+        createOrder: function(data, actions) {
+          const amount = document.getElementById('modalDepositAmount').value || '20';
+          return actions.order.create({
+            purchase_units: [{
+              amount: {
+                value: amount
+              }
+            }]
+          });
+        },
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            alert('Deposit completed by ' + details.payer.name.given_name);
+            closeDepositModal();
+            // In a real app, update balance and show success message
+          });
+        }
+      }).render('#paypal-deposit-button-container');
+    }
+
+    function closeDepositModal() {
+      document.getElementById('depositModal').classList.add('hidden');
+    }
+
+    function openWithdrawalModal() {
+      document.getElementById('withdrawalModal').classList.remove('hidden');
+      // Default to PayPal
+      document.getElementById('paypalEmailContainer').classList.remove('hidden');
+    }
+
+    function closeWithdrawalModal() {
+      document.getElementById('withdrawalModal').classList.add('hidden');
+    }
+
+    function processWithdrawal() {
+      const amount = document.getElementById('withdrawalAmount').value;
+      const method = document.getElementById('withdrawalMethod').value;
+      
+      if (!amount || amount <= 0) {
+        alert('Please enter a valid amount');
+        return;
+      }
+      
+      alert(`Withdrawal request for $${amount} via ${method} has been submitted.`);
+      closeWithdrawalModal();
+    }
+
+    function openSavingsModal(action) {
+      const modal = document.getElementById('savingsModal');
+      const title = document.getElementById('savingsModalTitle');
+      const btn = document.getElementById('confirmSavingsBtn');
+      
+      if (action === 'deposit') {
+        title.textContent = 'Add to Savings';
+        btn.textContent = 'Deposit';
+        document.getElementById('savingsMaxLimit').textContent = 'Maximum savings limit: $100,000';
+      } else {
+        title.textContent = 'Withdraw from Savings';
+        btn.textContent = 'Withdraw';
+        document.getElementById('savingsMaxLimit').textContent = 'Available savings: $2,000.00';
+      }
+      
+      modal.classList.remove('hidden');
+    }
+
+    function closeSavingsModal() {
+      document.getElementById('savingsModal').classList.add('hidden');
+    }
+
+    function copyReferralCode() {
+      navigator.clipboard.writeText('https://salticsx.com/ref/SALTICSX123');
+      alert('Referral link copied to clipboard!');
+    }
+
+    // Logout Function
+    document.getElementById('logoutButton').addEventListener('click', function() {
+      localStorage.removeItem('authToken');
+      window.location.href = 'login.html';
+    });
+  </script>
+  <!-- PayPal SDK -->
+  <script src="https://www.paypal.com/sdk/js?client-id=test&currency=USD"></script>
+</body>
+</html>

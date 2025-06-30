@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --primary: #B8860B;
+  --primary-light: #F8F4E6;
+  --secondary: #356859;
+  --secondary-light: #E8F1EE;
+  --dark: #2D2D2D;
+  --light: #FFFFFF;
+  --gray: #F5F5F5;
+  --border: #E0E0E0;
+  --success: #4CAF50;
+  --warning: #FFC107;
+  --danger: #F44336;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--dark);
+  background-color: var(--gray);
+}
+
+/* Status badges */
+.status-badge {
+  @apply px-3 py-1 rounded-full text-xs font-semibold;
+}
+.status-active {
+  @apply bg-green-100 text-green-800;
+}
+.status-pending {
+  @apply bg-yellow-100 text-yellow-800;
+}
+.status-inactive {
+  @apply bg-red-100 text-red-800;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}

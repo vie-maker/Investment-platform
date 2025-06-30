@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investment Dashboard | InvestPro</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Global Styles */
+    :root {
+      --primary: #4361ee;
+      --primary-light: #e6f0ff;
+      --danger: #f72585;
+      --success: #4cc9f0;
+      --warning: #f8961e;
+      --text: #2b2d42;
+      --light-text: #8d99ae;
+      --bg: #f8f9fa;
+      --card-bg: #ffffff;
+      --border: #e9ecef;
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      --shadow-hover: 0 10px 15px rgba(0, 0, 0, 0.1);
+      --radius: 12px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Header */
+    header {
+      background-color: var(--card-bg);
+      padding: 1rem 0;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo i {
+      font-size: 1.2em;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: var(--transition);
+    }
+
+    nav a:hover, nav a.active {
+      color: var(--primary);
+    }
+
+    nav a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--primary);
+      border-radius: 3px;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    /* Dashboard */
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .greeting-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .greeting h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .greeting p {
+      color: var(--light-text);
+    }
+
+    .time-display {
+      background: var(--primary);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .balance-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .balance-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 8px;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+    }
+
+    .balance-amount {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 1rem 0;
+      color: var(--primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .balance-amount i {
+      font-size: 1.5rem;
+    }
+
+    .crypto-balance {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .crypto-item {
+      background: var(--bg);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .crypto-item i {
+      font-size: 1.25rem;
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 2rem 0 1rem;
+    }
+
+    .btn {
+      padding: 0.875rem;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+    }
+
+    .btn-danger {
+      background: var(--danger);
+    }
+
+    .btn-success {
+      background: var(--success);
+    }
+
+    .btn-warning {
+      background: var(--warning);
+    }
+
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .stat-card h3 {
+      font-size: 0.875rem;
+      color: var(--light-text);
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-card p {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    .positive {
+      color: var(--success);
+    }
+
+    .negative {
+      color: var(--danger);
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .action-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .action-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .action-item span {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 500;
+    }
+
+    .action-item i:first-child {
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
+
+    .action-item .arrow {
+      color: var(--light-text);
+    }
+
+    .logout-item {
+      color: var(--danger);
+    }
+
+    .logout-item i:first-child {
+      color: var(--danger);
+    }
+
+    /* Modals */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: var(--radius);
+      width: 90%;
+      max-width: 450px;
+      position: relative;
+      transform: translateY(20px);
+      transition: transform 0.3s ease;
+    }
+
+    .modal.show .modal-content {
+      transform: translateY(0);
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--light-text);
+      transition: var(--transition);
+    }
+
+    .close-modal:hover {
+      color: var(--danger);
+      transform: rotate(90deg);
+    }
+
+    .modal h3 {
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+
+    /* Notifications */
+    .notification {
+      position: fixed;
+      top: 1.5rem;
+      right: 1.5rem;
+      padding: 1rem 1.5rem;
+      border-radius: var(--radius);
+      color: white;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      box-shadow: var(--shadow-hover);
+      z-index: 3000;
+      transform: translateX(150%);
+      transition: transform 0.3s ease;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      background: var(--success);
+    }
+
+    .notification.error {
+      background: var(--danger);
+    }
+
+    .notification i {
+      font-size: 1.25rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #2b2d42;
+      color: white;
+      padding: 3rem 0 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .footer-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+
+    .footer-logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .footer-links h3 {
+      margin-bottom: 1.25rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .footer-links ul {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+      color: #adb5bd;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover {
+      color: var(--primary-light);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .social-links a {
+      color: white;
+      font-size: 1.25rem;
+      transition: var(--transition);
+    }
+
+    .social-links a:hover {
+      color: var(--primary-light);
+      transform: translateY(-3px);
+    }
+
+    .copyright {
+      text-align: center;
+      padding-top: 1.5rem;
+      margin-top: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      color: #adb5bd;
+      font-size: 0.875rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+      .greeting-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 1rem 0;
+      }
+      
+      .header-container {
+        position: relative;
+      }
+      
+      nav {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        width: 100%;
+        background: var(--card-bg);
+        box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        padding: 1rem;
+        transform: translateY(-150%);
+        transition: transform 0.3s ease;
+        z-index: 999;
+      }
+      
+      nav.active {
+        transform: translateY(0);
+      }
+      
+      nav ul {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      nav a {
+        padding: 0.75rem;
+        display: block;
+      }
+      
+      nav a.active::after {
+        display: none;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .balance-amount {
+        font-size: 2rem;
+      }
+      
+      .stats-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .dashboard-container {
+        padding: 0 1rem;
+      }
+      
+      .balance-card {
+        padding: 1.5rem 1rem;
+      }
+      
+      .action-buttons {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        padding: 1.5rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <i class="fas fa-chart-line"></i>
+        <span>InvestPro</span>
+      </a>
+      
+      <nav id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="dashboard.html" class="active">Dashboard</a></li>
+          <li><a href="investment_plan.html">Plans</a></li>
+          <li><a href="transactions.html">Transactions</a></li>
+          <li><a href="support.html">Support</a></li>
+        </ul>
+      </nav>
+      
+      <div class="user-profile">
+        <div class="avatar" id="userAvatar">U</div>
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <div class="greeting-section">
+      <div class="greeting">
+        <h1 id="userGreeting">Welcome back!</h1>
+        <p id="userIdDisplay">User ID: Loading...</p>
+      </div>
+      <div class="time-display">
+        <i class="far fa-clock"></i>
+        <span id="currentTime">Loading...</span>
+      </div>
+    </div>
+
+    <div class="balance-card">
+      <h2>Account Balance</h2>
+      <div class="balance-amount">
+        <i class="fas fa-wallet"></i>
+        <span id="balanceAmount">$0.00</span>
+      </div>
+      
+      <div class="crypto-balance">
+        <div class="crypto-item">
+          <i class="fab fa-bitcoin"></i>
+          <span id="btcBalance">BTC: 0.000000</span>
+        </div>
+        <div class="crypto-item">
+          <i class="fas fa-coins"></i>
+          <span id="usdtBalance">USDT: 0.000000</span>
+        </div>
+        <div class="crypto-item">
+          <i class="fab fa-ethereum"></i>
+          <span id="ethBalance">ETH: 0.000000</span>
+        </div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn btn-primary" id="rechargeBtn">
+          <i class="fas fa-coins"></i> Deposit
+        </button>
+        <button class="btn btn-danger" id="withdrawBtn">
+          <i class="fas fa-money-bill-wave"></i> Withdraw
+        </button>
+        <button class="btn btn-success" id="investBtn">
+          <i class="fas fa-chart-line"></i> Invest
+        </button>
+        <button class="btn btn-warning" id="transferBtn">
+          <i class="fas fa-exchange-alt"></i> Transfer
+        </button>
+      </div>
+    </div>
+
+    <div class="stats-container">
+      <div class="stat-card">
+        <h3><i class="fas fa-arrow-up"></i> Today's Earnings</h3>
+        <p class="positive" id="todayEarnings">+$0.00</p>
+      </div>
+      <div class="stat-card">
+        <h3><i class="fas fa-chart-pie"></i> Portfolio Value</h3>
+        <p id="portfolioValue">$0.00</p>
+      </div>
+      <div class="stat-card">
+        <h3><i class="fas fa-piggy-bank"></i> Total Profit</h3>
+        <p id="totalProfit">$0.00</p>
+      </div>
+      <div class="stat-card">
+        <h3><i class="fas fa-users"></i> Referral Bonus</h3>
+        <p id="referralBonus">$0.00</p>
+      </div>
+    </div>
+
+    <div class="quick-actions">
+      <div class="action-item" id="transactionHistory">
+        <span><i class="fas fa-history"></i> Transaction History</span>
+        <i class="fas fa-chevron-right arrow"></i>
+      </div>
+      <div class="action-item" id="investmentPlans">
+        <span><i class="fas fa-project-diagram"></i> Investment Plans</span>
+        <i class="fas fa-chevron-right arrow"></i>
+      </div>
+      <div class="action-item" id="referralProgram">
+        <span><i class="fas fa-users"></i> Referral Program</span>
+        <i class="fas fa-chevron-right arrow"></i>
+      </div>
+      <div class="action-item" id="supportCenter">
+        <span><i class="fas fa-headset"></i> Support Center</span>
+        <i class="fas fa-chevron-right arrow"></i>
+      </div>
+      <div class="action-item" id="accountSettings">
+        <span><i class="fas fa-user-cog"></i> Account Settings</span>
+        <i class="fas fa-chevron-right arrow"></i>
+      </div>
+      <div class="action-item logout-item" id="logoutMenuItem">
+        <span><i class="fas fa-sign-out-alt"></i> Logout</span>
+        <i class="fas fa-chevron-right arrow"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recharge Modal -->
+  <div class="modal" id="rechargeModal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeRechargeModal">&times;</span>
+      <h3><i class="fas fa-coins"></i> Deposit Funds</h3>
+      <form id="rechargeForm">
+        <div class="form-group">
+          <label for="rechargeAmount">Amount (USD)</label>
+          <input type="number" id="rechargeAmount" class="form-control" min="10" step="0.01" placeholder="100.00" required>
+        </div>
+        <div class="form-group">
+          <label for="paymentMethod">Payment Method</label>
+          <select id="paymentMethod" class="form-control" required>
+            <option value="">Select method</option>
+            <option value="usdt">USDT (TRC20)</option>
+            <option value="btc">Bitcoin (BTC)</option>
+            <option value="eth">Ethereum (ETH)</option>
+            <option value="bank">Bank Transfer</option>
+            <option value="card">Credit/Debit Card</option>
+          </select>
+        </div>
+        <div class="form-group" id="cryptoAddressGroup" style="display:none;">
+          <label id="cryptoAddressLabel">Wallet Address</label>
+          <input type="text" id="cryptoAddress" class="form-control" placeholder="Enter your wallet address">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">
+          <i class="fas fa-check"></i> Confirm Deposit
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Withdraw Modal -->
+  <div class="modal" id="withdrawModal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeWithdrawModal">&times;</span>
+      <h3><i class="fas fa-money-bill-wave"></i> Withdraw Funds</h3>
+      <form id="withdrawForm">
+        <div class="form-group">
+          <label for="withdrawAmount">Amount (USD)</label>
+          <input type="number" id="withdrawAmount" class="form-control" min="10" step="0.01" placeholder="50.00" required>
+        </div>
+        <div class="form-group">
+          <label for="withdrawMethod">Withdrawal Method</label>
+          <select id="withdrawMethod" class="form-control" required>
+            <option value="">Select method</option>
+            <option value="usdt">USDT (TRC20)</option>
+            <option value="btc">Bitcoin (BTC)</option>
+            <option value="bank">Bank Transfer</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="walletAddress">Wallet/Bank Details</label>
+          <input type="text" id="walletAddress" class="form-control" placeholder="Enter your wallet address or bank details" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">
+          <i class="fas fa-check"></i> Request Withdrawal
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Transfer Modal -->
+  <div class="modal" id="transferModal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeTransferModal">&times;</span>
+      <h3><i class="fas fa-exchange-alt"></i> Transfer Funds</h3>
+      <form id="transferForm">
+        <div class="form-group">
+          <label for="transferAmount">Amount (USD)</label>
+          <input type="number" id="transferAmount" class="form-control" min="1" step="0.01" placeholder="10.00" required>
+        </div>
+        <div class="form-group">
+          <label for="recipientId">Recipient User ID</label>
+          <input type="text" id="recipientId" class="form-control" placeholder="Enter recipient's user ID" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">
+          <i class="fas fa-paper-plane"></i> Send Transfer
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div class="notification" id="notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notificationMessage">Success!</span>
+  </div>
+
+  <footer>
+    <div class="footer-container">
+      <div class="footer-links">
+        <a href="index.html" class="footer-logo">InvestPro</a>
+        <p>Smart investments for your financial future</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-telegram"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h3>Company</h3>
+        <ul>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Our Team</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h3>Resources</h3>
+        <ul>
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Investment Guide</a></li>
+          <li><a href="#">Market Analysis</a></li>
+          <li><a href="#">FAQ</a></li>
+          <li><a href="#">API Documentation</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Risk Disclosure</a></li>
+          <li><a href="#">AML Policy</a></li>
+          <li><a href="#">Compliance</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <p>&copy; 2023 InvestPro. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // API Configuration
+    const API_BASE_URL = 'https://your-api-endpoint.com/api';
+    let currentUser = null;
+    let dataRefreshInterval;
+
+    // DOM Elements
+    const elements = {
+      mobileMenuBtn: document.getElementById('mobileMenuBtn'),
+      mainNav: document.getElementById('mainNav'),
+      currentTime: document.getElementById('currentTime'),
+      userGreeting: document.getElementById('userGreeting'),
+      userIdDisplay: document.getElementById('userIdDisplay'),
+      userAvatar: document.getElementById('userAvatar'),
+      balanceAmount: document.getElementById('balanceAmount'),
+      btcBalance: document.getElementById('btcBalance'),
+      usdtBalance: document.getElementById('usdtBalance'),
+      ethBalance: document.getElementById('ethBalance'),
+      todayEarnings: document.getElementById('todayEarnings'),
+      portfolioValue: document.getElementById('portfolioValue'),
+      totalProfit: document.getElementById('totalProfit'),
+      referralBonus: document.getElementById('referralBonus'),
+      rechargeBtn: document.getElementById('rechargeBtn'),
+      withdrawBtn: document.getElementById('withdrawBtn'),
+      investBtn: document.getElementById('investBtn'),
+      transferBtn: document.getElementById('transferBtn'),
+      rechargeModal: document.getElementById('rechargeModal'),
+      withdrawModal: document.getElementById('withdrawModal'),
+      transferModal: document.getElementById('transferModal'),
+      closeRechargeModal: document.getElementById('closeRechargeModal'),
+      closeWithdrawModal: document.getElementById('closeWithdrawModal'),
+      closeTransferModal: document.getElementById('closeTransferModal'),
+      rechargeForm: document.getElementById('rechargeForm'),
+      withdrawForm: document.getElementById('withdrawForm'),
+      transferForm: document.getElementById('transferForm'),
+      paymentMethod: document.getElementById('paymentMethod'),
+      cryptoAddressGroup: document.getElementById('cryptoAddressGroup'),
+      cryptoAddressLabel: document.getElementById('cryptoAddressLabel'),
+      cryptoAddress: document.getElementById('cryptoAddress'),
+      withdrawMethod: document.getElementById('withdrawMethod'),
+      notification: document.getElementById('notification'),
+      notificationMessage: document.getElementById('notificationMessage'),
+      logoutMenuItem: document.getElementById('logoutMenuItem')
+    };
+
+    // Initialize the dashboard
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Check authentication
+      await checkAuthentication();
+      
+      // Load user data
+      await loadUserData();
+      
+      // Setup event listeners
+      setupEventListeners();
+      
+      // Start periodic updates
+      startDataUpdates();
+    });
+
+    // Authentication functions
+    async function checkAuthentication() {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        redirectToLogin();
+        return;
+      }
+      
+      try {
+        const response = await fetch(`${API_BASE_URL}/verify-token`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Invalid token');
+        }
+      } catch (error) {
+        localStorage.removeItem('authToken');
+        redirectToLogin();
+      }
+    }
+
+    function redirectToLogin() {
+      window.location.href = 'login.html?redirect=' + encodeURIComponent(window.location.pathname);
+    }
+
+    async function loadUserData() {
+      try {
+        showLoader();
+        const response = await fetch(`${API_BASE_URL}/user`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        
+        if (!response.ok) throw new Error('Failed to load user data');
+        
+        const data = await response.json();
+        currentUser = data.user;
+        
+        // Update UI with user data
+        updateUserUI();
+        updateFinancialData(data.financials);
+        hideLoader();
+      } catch (error) {
+        console.error('Error loading user data:', error);
+        showError('Failed to load user data. Please try again.');
+        hideLoader();
+      }
+    }
+
+    function updateUserUI() {
+      if (!currentUser) return;
+      
+      // Update greeting and user info
+      const now = new Date();
+      const hours = now.getHours();
+      let greeting = 'Good evening';
+      
+      if (hours < 12) greeting = 'Good morning';
+      else if (hours < 18) greeting = 'Good afternoon';
+      
+      elements.userGreeting.textContent = `${greeting}, ${currentUser.firstName || 'User'}!`;
+      elements.userIdDisplay.textContent = `User ID: ${currentUser.userId}`;
+      
+      // Update avatar
+      if (currentUser.firstName) {
+        elements.userAvatar.textContent = currentUser.firstName.charAt(0).toUpperCase();
+      }
+      
+      // Update avatar color based on user level (example)
+      if (currentUser.accountLevel === 'premium') {
+        elements.userAvatar.style.background = 'linear-gradient(135deg, #4361ee, #3a0ca3)';
+      } else if (currentUser.accountLevel === 'vip') {
+        elements.userAvatar.style.background = 'linear-gradient(135deg, #f72585, #7209b7)';
+      }
+    }
+
+    function updateFinancialData(data) {
+      elements.balanceAmount.textContent = `$${data.balance.toFixed(2)}`;
+      elements.btcBalance.textContent = `BTC: ${data.cryptoBalances.btc.toFixed(6)}`;
+      elements.usdtBalance.textContent = `USDT: ${data.cryptoBalances.usdt.toFixed(2)}`;
+      elements.ethBalance.textContent = `ETH: ${data.cryptoBalances.eth.toFixed(6)}`;
+      
+      // Format earnings with + or - sign
+      const todayEarnings = data.todayEarnings;
+      elements.todayEarnings.textContent = `${todayEarnings >= 0 ? '+' : ''}$${todayEarnings.toFixed(2)}`;
+      elements.todayEarnings.className = todayEarnings >= 0 ? 'positive' : 'negative';
+      
+      elements.portfolioValue.textContent = `$${data.portfolioValue.toFixed(2)}`;
+      elements.totalProfit.textContent = `$${data.totalProfit.toFixed(2)}`;
+      elements.referralBonus.textContent = `$${data.referralBonus.toFixed(2)}`;
+    }
+
+    // Transaction functions
+    async function rechargeAccount(amount, method, address = '') {
+      try {
+        showLoader();
+        const response = await fetch(`${API_BASE_URL}/recharge`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify({ amount, method, address })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Recharge failed');
+        }
+        
+        const data = await response.json();
+        hideLoader();
+        return data;
+      } catch (error) {
+        hideLoader();
+        console.error('Recharge error:', error);
+        throw error;
+      }
+    }
+
+    async function withdrawFunds(amount, method, walletAddress) {
+      try {
+        showLoader();
+        const response = await fetch(`${API_BASE_URL}/withdraw`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify({ amount, method, walletAddress })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Withdrawal failed');
+        }
+        
+        const data = await response.json();
+        hideLoader();
+        return data;
+      } catch (error) {
+        hideLoader();
+        console.error('Withdrawal error:', error);
+        throw error;
+      }
+    }
+
+    async function transferFunds(amount, recipientId) {
+      try {
+        showLoader();
+        const response = await fetch(`${API_BASE_URL}/transfer`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          },
+          body: JSON.stringify({ amount, recipientId })
+        });
+        
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Transfer failed');
+        }
+        
+        const data = await response.json();
+        hideLoader();
+        return data;
+      } catch (error) {
+        hideLoader();
+        console.error('Transfer error:', error);
+        throw error;
+      }
+    }
+
+    // UI Functions
+    function setupEventListeners() {
+      // Mobile menu toggle
+      elements.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+      
+      // Close mobile menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!elements.mainNav.contains(e.target) {
+          elements.mainNav.classList.remove('active');
+        }
+      });
+
+      // Modal controls
+      elements.rechargeBtn.addEventListener('click', () => showModal(elements.rechargeModal));
+      elements.withdrawBtn.addEventListener('click', () => showModal(elements.withdrawModal));
+      elements.transferBtn.addEventListener('click', () => showModal(elements.transferModal));
+      
+      elements.closeRechargeModal.addEventListener('click', () => hideModal(elements.rechargeModal));
+      elements.closeWithdrawModal.addEventListener('click', () => hideModal(elements.withdrawModal));
+      elements.closeTransferModal.addEventListener('click', () => hideModal(elements.transferModal));
+      
+      // Close modals when clicking outside
+      window.addEventListener('click', (e) => {
+        if (e.target === elements.rechargeModal) hideModal(elements.rechargeModal);
+        if (e.target === elements.withdrawModal) hideModal(elements.withdrawModal);
+        if (e.target === elements.transferModal) hideModal(elements.transferModal);
+      });
+
+      // Payment method change
+      elements.paymentMethod.addEventListener('change', (e) => {
+        const method = e.target.value;
+        if (['usdt', 'btc', 'eth'].includes(method)) {
+          elements.cryptoAddressGroup.style.display = 'block';
+          elements.cryptoAddressLabel.textContent = `${method.toUpperCase()} Wallet Address`;
+          elements.cryptoAddress.required = true;
+        } else {
+          elements.cryptoAddressGroup.style.display = 'none';
+          elements.cryptoAddress.required = false;
+        }
+      });
+
+      // Form submissions
+      elements.rechargeForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const amount = parseFloat(elements.rechargeForm.rechargeAmount.value);
+        const method = elements.rechargeForm.paymentMethod.value;
+        const address = method === 'bank' || method === 'card' ? '' : elements.cryptoAddress.value;
+        
+        try {
+          const result = await rechargeAccount(amount, method, address);
+          showSuccess('Deposit request received! Funds will be credited after confirmation.');
+          await loadUserData();
+          hideModal(elements.rechargeModal);
+          elements.rechargeForm.reset();
+          elements.cryptoAddressGroup.style.display = 'none';
+        } catch (error) {
+          showError(error.message || 'Deposit failed. Please try again.');
+        }
+      });
+
+      elements.withdrawForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const amount = parseFloat(elements.withdrawForm.withdrawAmount.value);
+        const method = elements.withdrawForm.withdrawMethod.value;
+        const walletAddress = elements.withdrawForm.walletAddress.value;
+        
+        try {
+          const result = await withdrawFunds(amount, method, walletAddress);
+          showSuccess('Withdrawal request submitted! Processing may take 1-3 business days.');
+          await loadUserData();
+          hideModal(elements.withdrawModal);
+          elements.withdrawForm.reset();
+        } catch (error) {
+          showError(error.message || 'Withdrawal failed. Please try again.');
+        }
+      });
+
+      elements.transferForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const amount = parseFloat(elements.transferForm.transferAmount.value);
+        const recipientId = elements.transferForm.recipientId.value;
+        
+        try {
+          const result = await transferFunds(amount, recipientId);
+          showSuccess(`Successfully transferred $${amount.toFixed(2)} to user ${recipientId}`);
+          await loadUserData();
+          hideModal(elements.transferModal);
+          elements.transferForm.reset();
+        } catch (error) {
+          showError(error.message || 'Transfer failed. Please try again.');
+        }
+      });
+
+      // Logout
+      elements.logoutMenuItem.addEventListener('click', logout);
+
+      // Menu items navigation
+      document.querySelectorAll('.action-item').forEach(item => {
+        if (item.id !== 'logoutMenuItem') {
+          item.addEventListener('click', () => {
+            const pageMap = {
+              'transactionHistory': 'transactions.html',
+              'investmentPlans': 'investment_plan.html',
+              'referralProgram': 'referral.html',
+              'supportCenter': 'support.html',
+              'accountSettings': 'settings.html'
+            };
+            
+            if (pageMap[item.id]) {
+              window.location.href = pageMap[item.id];
+            }
+          });
+        }
+      });
+    }
+
+    function toggleMobileMenu() {
+      elements.mainNav.classList.toggle('active');
+    }
+
+    function showModal(modal) {
+      modal.style.display = 'flex';
+      setTimeout(() => {
+        modal.classList.add('show');
+      }, 10);
+    }
+
+    function hideModal(modal) {
+      modal.classList.remove('show');
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
+    }
+
+    function startDataUpdates() {
+      // Update time every second
+      updateTime();
+      setInterval(updateTime, 1000);
+
+      // Refresh data every 30 seconds
+      refreshData();
+      dataRefreshInterval = setInterval(refreshData, 30000);
+    }
+
+    function stopDataUpdates() {
+      if (dataRefreshInterval) {
+        clearInterval(dataRefreshInterval);
+      }
+    }
+
+    function updateTime() {
+      const now = new Date();
+      elements.currentTime.textContent = now.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+    }
+
+    async function refreshData() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/user/financials`, {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          }
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          updateFinancialData(data);
+        }
+      } catch (error) {
+        console.error('Data refresh error:', error);
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('authToken');
+      stopDataUpdates();
+      window.location.href = 'login.html';
+    }
+
+    function showLoader() {
+      // In a real app, you would show a loading spinner
+      console.log('Loading...');
+    }
+
+    function hideLoader() {
+      // In a real app, you would hide the loading spinner
+      console.log('Loading complete');
+    }
+
+    function showSuccess(message) {
+      elements.notification.className = 'notification success show';
+      elements.notification.innerHTML = `<i class="fas fa-check-circle"></i><span>${message}</span>`;
+      
+      setTimeout(() => {
+        elements.notification.classList.remove('show');
+      }, 5000);
+    }
+
+    function showError(message) {
+      elements.notification.className = 'notification error show';
+      elements.notification.innerHTML = `<i class="fas fa-exclamation-circle"></i><span>${message}</span>`;
+      
+      setTimeout(() => {
+        elements.notification.classList.remove('show');
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings | SalticsX Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #D4AF37; /* Gold */
+      --primary-light: #F5E6AB;
+      --primary-dark: #B7950B;
+      --secondary: #2E8B57; /* Green */
+      --secondary-light: #C1E1C1;
+      --secondary-dark: #1E6B47;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #f8f9fa;
+      --dark: #333;
+      --gray: #6c757d;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+    }
+
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .admin-sidebar {
+      width: 250px;
+      background-color: var(--secondary);
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .admin-logo {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--primary);
+      background-color: var(--secondary-dark);
+    }
+
+    .admin-logo img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .admin-logo span {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .admin-menu {
+      padding: 10px 0;
+    }
+
+    .admin-menu-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .admin-menu-item i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .admin-menu-item.active {
+      background-color: var(--primary);
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .admin-menu-item:hover:not(.active) {
+      background-color: var(--secondary-light);
+      color: var(--dark);
+    }
+
+    /* Main Content Styles */
+    .admin-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-header {
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .admin-header h2 {
+      color: var(--secondary-dark);
+      font-size: 1.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-header h2 i {
+      color: var(--primary);
+    }
+
+    .admin-user {
+      display: flex;
+      align-items: center;
+    }
+
+    .admin-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: 600;
+    }
+
+    .admin-content {
+      padding: 25px;
+      flex: 1;
+    }
+
+    /* Settings Tabs */
+    .settings-tabs {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+    }
+
+    .tab-header {
+      display: flex;
+      border-bottom: 1px solid var(--light);
+      background-color: var(--light);
+    }
+
+    .tab-link {
+      padding: 16px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      color: var(--gray);
+      position: relative;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-link:hover {
+      color: var(--primary);
+    }
+
+    .tab-link.active {
+      color: var(--primary);
+      background-color: white;
+    }
+
+    .tab-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--primary);
+    }
+
+    .tab-content {
+      padding: 30px;
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--secondary-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-label i {
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--light);
+      border-radius: var(--border-radius);
+      font-family: 'Inter', sans-serif;
+      transition: var(--transition);
+      background-color: #FAFAFA;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-check-input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--primary);
+    }
+
+    .form-check-label {
+      margin: 0;
+      color: var(--dark);
+    }
+
+    .form-actions {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--light);
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+    }
+
+    .btn-admin {
+      padding: 10px 20px;
+      border-radius: var(--border-radius);
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-admin-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-admin-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-admin-secondary {
+      background-color: white;
+      color: var(--gray);
+      border: 1px solid var(--light);
+    }
+
+    .btn-admin-secondary:hover {
+      background-color: #F5F5F5;
+      transform: translateY(-1px);
+    }
+
+    /* File Upload */
+    .file-upload {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .file-upload-preview {
+      width: 100px;
+      height: 100px;
+      border-radius: var(--border-radius);
+      background-color: var(--light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 1px dashed var(--primary-light);
+    }
+
+    .file-upload-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+    }
+
+    .file-upload-preview i {
+      color: var(--gray);
+      font-size: 1.5rem;
+    }
+
+    /* Currency Input */
+    .currency-input {
+      display: flex;
+      align-items: center;
+      border: 1px solid var(--light);
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      background-color: #FAFAFA;
+    }
+
+    .currency-symbol {
+      padding: 0 15px;
+      color: var(--gray);
+      background-color: var(--light);
+      height: 100%;
+      display: flex;
+      align-items: center;
+    }
+
+    .currency-input-field {
+      flex: 1;
+      border: none;
+      padding: 12px 15px;
+      background: transparent;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .currency-input-field:focus {
+      outline: none;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        width: 70px;
+      }
+      
+      .admin-logo span, .admin-menu-item span {
+        display: none;
+      }
+      
+      .admin-menu-item {
+        justify-content: center;
+      }
+      
+      .tab-header {
+        flex-wrap: wrap;
+      }
+      
+      .tab-link {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .admin-container {
+        flex-direction: column;
+      }
+      
+      .admin-sidebar {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .admin-menu {
+        display: flex;
+        overflow-x: auto;
+      }
+      
+      .admin-menu-item {
+        white-space: nowrap;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn-admin {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .file-upload {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .tab-link span {
+        display: none;
+      }
+      
+      .tab-link i {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../assets/images/logo.png" alt="SalticsX">
+        <span>SalticsX Admin</span>
+      </div>
+      
+      <div class="admin-menu">
+        <a href="dashboard.html" class="admin-menu-item">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="users.html" class="admin-menu-item">
+          <i class="fas fa-users"></i>
+          <span>Users</span>
+        </a>
+        <a href="investments.html" class="admin-menu-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Investments</span>
+        </a>
+        <a href="transactions.html" class="admin-menu-item">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Transactions</span>
+        </a>
+        <a href="withdrawals.html" class="admin-menu-item">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Withdrawals</span>
+        </a>
+        <a href="settings.html" class="admin-menu-item active">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <a href="../index.html" class="admin-menu-item">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Back to Site</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="admin-main">
+      <div class="admin-header">
+        <h2><i class="fas fa-cog"></i> System Settings</h2>
+        <div class="admin-user">
+          <div class="admin-avatar">A</div>
+          <span>Admin User</span>
+        </div>
+      </div>
+      
+      <div class="admin-content">
+        <div class="settings-tabs">
+          <div class="tab-header">
+            <button class="tab-link active" data-tab="general">
+              <i class="fas fa-sliders-h"></i>
+              <span>General</span>
+            </button>
+            <button class="tab-link" data-tab="payments">
+              <i class="fas fa-credit-card"></i>
+              <span>Payments</span>
+            </button>
+            <button class="tab-link" data-tab="security">
+              <i class="fas fa-shield-alt"></i>
+              <span>Security</span>
+            </button>
+            <button class="tab-link" data-tab="email">
+              <i class="fas fa-envelope"></i>
+              <span>Email</span>
+            </button>
+          </div>
+          
+          <!-- General Settings Tab -->
+          <div id="general" class="tab-content active">
+            <form id="generalSettings">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-signature"></i>
+                  Platform Name
+                </label>
+                <input type="text" class="form-control" value="SalticsX">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-money-bill-wave"></i>
+                  Default Currency
+                </label>
+                <select class="form-control">
+                  <option>USD - US Dollar</option>
+                  <option>EUR - Euro</option>
+                  <option>GBP - British Pound</option>
+                  <option>BTC - Bitcoin</option>
+                  <option>ETH - Ethereum</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-image"></i>
+                  Platform Logo
+                </label>
+                <div class="file-upload">
+                  <div class="file-upload-preview">
+                    <i class="fas fa-image"></i>
+                  </div>
+                  <div style="flex: 1;">
+                    <input type="file" class="form-control">
+                    <small style="display: block; margin-top: 5px; color: var(--gray);">
+                      Recommended size: 300x100px (transparent PNG)
+                    </small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-palette"></i>
+                  Primary Color
+                </label>
+                <input type="color" class="form-control" value="#D4AF37" style="height: 50px; width: 100px; padding: 5px;">
+              </div>
+              
+              <div class="form-actions">
+                <button type="button" class="btn-admin btn-admin-secondary">
+                  <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn-admin btn-admin-primary">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Payments Settings Tab -->
+          <div id="payments" class="tab-content">
+            <form id="paymentSettings">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fab fa-paypal"></i>
+                  PayPal Client ID
+                </label>
+                <input type="text" class="form-control" placeholder="Enter PayPal Client ID">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-key"></i>
+                  PayPal Secret
+                </label>
+                <input type="password" class="form-control" placeholder="Enter PayPal Secret">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-hand-holding-usd"></i>
+                  Minimum Deposit
+                </label>
+                <div class="currency-input">
+                  <span class="currency-symbol">$</span>
+                  <input type="number" class="currency-input-field" value="10" min="0" step="0.01">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-money-bill-wave"></i>
+                  Minimum Withdrawal
+                </label>
+                <div class="currency-input">
+                  <span class="currency-symbol">$</span>
+                  <input type="number" class="currency-input-field" value="20" min="0" step="0.01">
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-percentage"></i>
+                  Withdrawal Fee (%)
+                </label>
+                <input type="number" class="form-control" value="2" min="0" max="10" step="0.1">
+              </div>
+              
+              <div class="form-actions">
+                <button type="button" class="btn-admin btn-admin-secondary">
+                  <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn-admin btn-admin-primary">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Security Settings Tab -->
+          <div id="security" class="tab-content">
+            <form id="securitySettings">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-clock"></i>
+                  Admin Session Timeout (minutes)
+                </label>
+                <input type="number" class="form-control" value="30" min="5" max="1440">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-lock"></i>
+                  Two-Factor Authentication
+                </label>
+                <div class="form-check">
+                  <input type="checkbox" id="enable2FA" class="form-check-input" checked>
+                  <label for="enable2FA" class="form-check-label">Enable Two-Factor Authentication for Admin Panel</label>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-key"></i>
+                  Password Policy
+                </label>
+                <select class="form-control">
+                  <option>Basic (6+ characters)</option>
+                  <option>Medium (8+ characters with numbers)</option>
+                  <option selected>Strong (12+ characters with numbers and special chars)</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-user-lock"></i>
+                  Login Attempts Before Lockout
+                </label>
+                <input type="number" class="form-control" value="5" min="1" max="10">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-ban"></i>
+                  Lockout Duration (minutes)
+                </label>
+                <input type="number" class="form-control" value="30" min="1" max="1440">
+              </div>
+              
+              <div class="form-actions">
+                <button type="button" class="btn-admin btn-admin-secondary">
+                  <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn-admin btn-admin-primary">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+          
+          <!-- Email Settings Tab -->
+          <div id="email" class="tab-content">
+            <form id="emailSettings">
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-server"></i>
+                  SMTP Host
+                </label>
+                <input type="text" class="form-control" placeholder="smtp.example.com">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-plug"></i>
+                  SMTP Port
+                </label>
+                <input type="number" class="form-control" placeholder="587">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-user"></i>
+                  SMTP Username
+                </label>
+                <input type="text" class="form-control" placeholder="your@email.com">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-key"></i>
+                  SMTP Password
+                </label>
+                <input type="password" class="form-control" placeholder="••••••••">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-envelope"></i>
+                  From Email
+                </label>
+                <input type="email" class="form-control" placeholder="noreply@yourdomain.com">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-signature"></i>
+                  From Name
+                </label>
+                <input type="text" class="form-control" placeholder="SalticsX Support">
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">
+                  <i class="fas fa-check-circle"></i>
+                  Email Encryption
+                </label>
+                <select class="form-control">
+                  <option>None</option>
+                  <option selected>TLS</option>
+                  <option>SSL</option>
+                </select>
+              </div>
+              
+              <div class="form-actions">
+                <button type="button" class="btn-admin btn-admin-secondary">
+                  <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="submit" class="btn-admin btn-admin-primary">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="js/admin.js"></script>
+  <script>
+    // Tab functionality
+    document.querySelectorAll('.tab-link').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        document.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        // Add active class to clicked tab
+        this.classList.add('active');
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+    
+    // Form submission handlers
+    document.getElementById('generalSettings').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('General settings saved successfully!');
+      // In a real app, this would send data to server
+    });
+    
+    document.getElementById('paymentSettings').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Payment settings saved successfully!');
+    });
+    
+    document.getElementById('securitySettings').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Security settings saved successfully!');
+    });
+    
+    document.getElementById('emailSettings').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('Email settings saved successfully!');
+    });
+    
+    // File upload preview
+    document.querySelector('#generalSettings input[type="file"]').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const preview = document.querySelector('.file-upload-preview');
+          preview.innerHTML = `<img src="${event.target.result}" alt="Logo Preview">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>

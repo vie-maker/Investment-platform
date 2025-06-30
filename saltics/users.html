@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management | SalticsX Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    /* Reuse admin styles from dashboard.html */
+    :root {
+      --admin-primary: #6c5ce7;
+      --admin-secondary: #a29bfe;
+      --admin-dark: #2d3436;
+      --admin-light: #f5f6fa;
+      --admin-danger: #d63031;
+      --admin-success: #00b894;
+    }
+    
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .admin-sidebar {
+      width: 250px;
+      background: var(--admin-dark);
+      color: white;
+      padding: 20px 0;
+      transition: all 0.3s;
+    }
+    
+    .admin-logo {
+      text-align: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .admin-logo img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+    
+    .admin-menu {
+      margin-top: 20px;
+    }
+    
+    .admin-menu-item {
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: all 0.3s;
+      border-left: 3px solid transparent;
+    }
+    
+    .admin-menu-item:hover, .admin-menu-item.active {
+      background: rgba(255,255,255,0.05);
+      color: white;
+      border-left-color: var(--admin-primary);
+    }
+    
+    .admin-menu-item i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .admin-main {
+      flex: 1;
+      background: var(--admin-light);
+    }
+    
+    .admin-header {
+      background: white;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 1px 10px rgba(0,0,0,0.05);
+    }
+    
+    .admin-user {
+      display: flex;
+      align-items: center;
+    }
+    
+    .admin-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--admin-primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: bold;
+    }
+    
+    .admin-content {
+      padding: 25px;
+    }
+    
+    .admin-table {
+      width: 100%;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+    
+    .admin-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .admin-table th, .admin-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .admin-table th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: var(--admin-dark);
+    }
+    
+    .admin-table tr:hover {
+      background: #f8f9fa;
+    }
+    
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .status-active {
+      background: rgba(0,184,148,0.1);
+      color: var(--admin-success);
+    }
+    
+    .status-inactive {
+      background: rgba(214, 48, 49, 0.1);
+      color: var(--admin-danger);
+    }
+    
+    .status-pending {
+      background: rgba(253, 203, 110, 0.1);
+      color: #fdcb6e;
+    }
+    
+    .btn-admin {
+      padding: 8px 15px;
+      border-radius: 5px;
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .btn-admin-primary {
+      background: var(--admin-primary);
+      color: white;
+    }
+    
+    .btn-admin-primary:hover {
+      background: #5649c0;
+    }
+    
+    .btn-admin-danger {
+      background: var(--admin-danger);
+      color: white;
+    }
+    
+    .btn-admin-danger:hover {
+      background: #b52b2b;
+    }
+    
+    .btn-admin-success {
+      background: var(--admin-success);
+      color: white;
+    }
+    
+    .btn-admin-success:hover {
+      background: #00a884;
+    }
+    
+    .search-bar {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    
+    .search-bar input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px 0 0 5px;
+      outline: none;
+    }
+    
+    .search-bar button {
+      padding: 10px 15px;
+      background: var(--admin-primary);
+      color: white;
+      border: none;
+      border-radius: 0 5px 5px 0;
+      cursor: pointer;
+    }
+    
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--admin-dark);
+    }
+    
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    
+    .pagination button {
+      padding: 8px 12px;
+      margin: 0 5px;
+      border: 1px solid #ddd;
+      background: white;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    
+    .pagination button.active {
+      background: var(--admin-primary);
+      color: white;
+      border-color: var(--admin-primary);
+    }
+    
+    @media (max-width: 768px) {
+      .admin-sidebar {
+        width: 70px;
+      }
+      
+      .admin-menu-item span {
+        display: none;
+      }
+      
+      .admin-menu-item i {
+        margin-right: 0;
+        font-size: 1.2rem;
+      }
+      
+      .admin-logo span {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../../assets/images/logo.png" alt="SalticsX">
+        <span>SalticsX Admin</span>
+      </div>
+      
+      <div class="admin-menu">
+        <a href="dashboard.html" class="admin-menu-item">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="users.html" class="admin-menu-item active">
+          <i class="fas fa-users"></i>
+          <span>Users</span>
+        </a>
+        <a href="investments.html" class="admin-menu-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Investments</span>
+        </a>
+        <a href="transactions.html" class="admin-menu-item">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Transactions</span>
+        </a>
+        <a href="withdrawals.html" class="admin-menu-item">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Withdrawals</span>
+        </a>
+        <a href="settings.html" class="admin-menu-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <a href="../../index.html" class="admin-menu-item">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Back to Site</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="admin-main">
+      <div class="admin-header">
+        <h2>User Management</h2>
+        <div class="admin-user">
+          <div class="admin-avatar">A</div>
+          <span>Admin User</span>
+        </div>
+      </div>
+      
+      <div class="admin-content">
+        <div class="search-bar">
+          <input type="text" placeholder="Search users by name, email or ID...">
+          <button><i class="fas fa-search"></i></button>
+        </div>
+        
+        <div class="admin-table">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Email</th>
+                <th>Country</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th>Joined</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#1001</td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="user-avatar">JD</div>
+                    <span>John Doe</span>
+                  </div>
+                </td>
+                <td>john.doe@example.com</td>
+                <td>United States</td>
+                <td>$1,250.00</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>2023-05-15</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary">View</button>
+                  <button class="btn-admin btn-admin-danger">Block</button>
+                </td>
+              </tr>
+              <tr>
+                <td>#1002</td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="user-avatar">JS</div>
+                    <span>Jane Smith</span>
+                  </div>
+                </td>
+                <td>jane.smith@example.com</td>
+                <td>Canada</td>
+                <td>$850.00</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>2023-05-20</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary">View</button>
+                  <button class="btn-admin btn-admin-danger">Block</button>
+                </td>
+              </tr>
+              <tr>
+                <td>#1003</td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="user-avatar">RJ</div>
+                    <span>Robert Johnson</span>
+                  </div>
+                </td>
+                <td>robert.j@example.com</td>
+                <td>United Kingdom</td>
+                <td>$2,150.00</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>2023-05-22</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary">View</button>
+                  <button class="btn-admin btn-admin-danger">Block</button>
+                </td>
+              </tr>
+              <tr>
+                <td>#1004</td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="user-avatar">SW</div>
+                    <span>Sarah Williams</span>
+                  </div>
+                </td>
+                <td>sarah.w@example.com</td>
+                <td>Australia</td>
+                <td>$500.00</td>
+                <td><span class="status-badge status-inactive">Inactive</span></td>
+                <td>2023-06-01</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary">View</button>
+                  <button class="btn-admin btn-admin-success">Activate</button>
+                </td>
+              </tr>
+              <tr>
+                <td>#1005</td>
+                <td>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="user-avatar">MB</div>
+                    <span>Michael Brown</span>
+                  </div>
+                </td>
+                <td>michael.b@example.com</td>
+                <td>Germany</td>
+                <td>$3,750.00</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>2023-06-05</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary">View</button>
+                  <button class="btn-admin btn-admin-danger">Block</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="pagination">
+          <button><i class="fas fa-angle-left"></i></button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button><i class="fas fa-angle-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../assets/js/admin.js"></script>
+</body>
+</html>

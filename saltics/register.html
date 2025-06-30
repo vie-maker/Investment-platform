@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Global Investment Platform</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00b894;
+      --secondary: #0984e3;
+      --accent: #f9d342;
+      --dark: #0e0e1b;
+      --darker: #1a1a2e;
+      --darkest: #2a2a40;
+      --light: #f4f4f4;
+      --error: #ff7675;
+      --success: #55efc4;
+      --warning: #fdcb6e;
+    }
+
+    body {
+      background-color: var(--dark);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--light);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--dark) 0%, var(--darker) 100%);
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    }
+
+    header h1 {
+      margin: 0;
+      color: var(--accent);
+      font-size: 2.2rem;
+      letter-spacing: 1px;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0 0;
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      flex-wrap: wrap;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: var(--light);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+
+    nav a:hover {
+      color: var(--accent);
+      background: rgba(255,255,255,0.1);
+    }
+
+    .register-container {
+      background-color: var(--darker);
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.4);
+      width: 100%;
+      max-width: 500px;
+      margin: 60px auto;
+      animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .register-container h2 {
+      text-align: center;
+      color: var(--accent);
+      margin-bottom: 30px;
+      font-size: 1.8rem;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--light);
+    }
+
+    .input-icon {
+      position: relative;
+    }
+
+    .input-icon i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary);
+    }
+
+    form input, form select {
+      display: block;
+      width: 100%;
+      padding: 12px 12px 12px 40px;
+      background: var(--darkest);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 5px;
+      color: var(--light);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    form input:focus, form select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(0,184,148,0.2);
+    }
+
+    .phone-input-container {
+      display: flex;
+    }
+
+    .country-code-select {
+      width: 120px;
+      margin-right: 10px;
+      padding-left: 10px;
+    }
+
+    .phone-input {
+      flex: 1;
+      padding-left: 40px !important;
+    }
+
+    .password-strength {
+      height: 4px;
+      background: var(--darkest);
+      margin-top: 5px;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .strength-meter {
+      height: 100%;
+      width: 0;
+      transition: width 0.3s ease;
+    }
+
+    .weak { background: var(--error); width: 30%; }
+    .medium { background: var(--warning); width: 60%; }
+    .strong { background: var(--success); width: 100%; }
+
+    .error-message {
+      color: var(--error);
+      font-size: 0.85rem;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      margin: 20px 0;
+    }
+
+    .terms input {
+      width: auto;
+      margin-right: 10px;
+      margin-top: 3px;
+    }
+
+    .terms label {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .terms a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    form button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent) 0%, #e6c200 100%);
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    form button:hover {
+      background: linear-gradient(135deg, #e6c200 0%, #d4b000 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 25px;
+      font-size: 0.95rem;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .login-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .security-info {
+      margin-top: 30px;
+      padding: 15px;
+      background: rgba(0,184,148,0.1);
+      border-radius: 5px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .security-info i {
+      margin-right: 10px;
+      color: var(--primary);
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateX(200%);
+      transition: transform 0.3s ease;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      background: var(--success);
+    }
+
+    .notification.error {
+      background: var(--error);
+    }
+
+    .notification i {
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 600px) {
+      .register-container {
+        padding: 30px 20px;
+        margin: 30px auto;
+      }
+      
+      nav ul {
+        gap: 15px;
+      }
+
+      .country-code-select {
+        width: 100px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .phone-input-container {
+        flex-direction: column;
+      }
+
+      .country-code-select {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Global Investment Platform</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="register.html">Register</a></li>
+        <li><a href="investment_plan.html">Plans</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="register-container">
+    <h2>Create Your Global Account</h2>
+    <form id="registerForm">
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <div class="input-icon">
+          <i class="fas fa-user"></i>
+          <input type="text" id="fullName" placeholder="John Doe" required>
+        </div>
+        <div class="error-message" id="nameError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-icon">
+          <i class="fas fa-envelope"></i>
+          <input type="email" id="email" placeholder="your@email.com" required>
+        </div>
+        <div class="error-message" id="emailError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="country">Country</label>
+        <div class="input-icon">
+          <i class="fas fa-globe"></i>
+          <select id="country" class="form-control" required>
+            <option value="">Select your country</option>
+            <!-- Asian Countries -->
+            <optgroup label="Asia">
+              <option value="CN">China</option>
+              <option value="IN">India</option>
+              <option value="ID">Indonesia</option>
+              <option value="JP">Japan</option>
+              <option value="KR">South Korea</option>
+              <option value="MY">Malaysia</option>
+              <option value="PH">Philippines</option>
+              <option value="SG">Singapore</option>
+              <option value="TH">Thailand</option>
+              <option value="VN">Vietnam</option>
+              <option value="BD">Bangladesh</option>
+              <option value="PK">Pakistan</option>
+            </optgroup>
+            <!-- European Countries -->
+            <optgroup label="Europe">
+              <option value="DE">Germany</option>
+              <option value="FR">France</option>
+              <option value="IT">Italy</option>
+              <option value="ES">Spain</option>
+              <option value="GB">United Kingdom</option>
+              <option value="NL">Netherlands</option>
+              <option value="SE">Sweden</option>
+              <option value="CH">Switzerland</option>
+              <option value="PL">Poland</option>
+              <option value="RU">Russia</option>
+              <option value="UA">Ukraine</option>
+            </optgroup>
+            <!-- African Countries -->
+            <optgroup label="Africa">
+              <option value="NG">Nigeria</option>
+              <option value="ZA">South Africa</option>
+              <option value="EG">Egypt</option>
+              <option value="KE">Kenya</option>
+              <option value="ET">Ethiopia</option>
+              <option value="GH">Ghana</option>
+              <option value="DZ">Algeria</option>
+              <option value="TZ">Tanzania</option>
+              <option value="UG">Uganda</option>
+              <option value="MA">Morocco</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="error-message" id="countryError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <div class="phone-input-container">
+          <select id="countryCode" class="country-code-select form-control">
+            <option value="+1">+1 (US/CA)</option>
+            <option value="+44">+44 (UK)</option>
+            <option value="+86">+86 (China)</option>
+            <option value="+91">+91 (India)</option>
+            <option value="+62">+62 (Indonesia)</option>
+            <option value="+81">+81 (Japan)</option>
+            <option value="+82">+82 (South Korea)</option>
+            <option value="+60">+60 (Malaysia)</option>
+            <option value="+63">+63 (Philippines)</option>
+            <option value="+65">+65 (Singapore)</option>
+            <option value="+66">+66 (Thailand)</option>
+            <option value="+84">+84 (Vietnam)</option>
+            <option value="+49">+49 (Germany)</option>
+            <option value="+33">+33 (France)</option>
+            <option value="+39">+39 (Italy)</option>
+            <option value="+34">+34 (Spain)</option>
+            <option value="+31">+31 (Netherlands)</option>
+            <option value="+46">+46 (Sweden)</option>
+            <option value="+41">+41 (Switzerland)</option>
+            <option value="+48">+48 (Poland)</option>
+            <option value="+7">+7 (Russia)</option>
+            <option value="+234">+234 (Nigeria)</option>
+            <option value="+27">+27 (South Africa)</option>
+            <option value="+20">+20 (Egypt)</option>
+            <option value="+254">+254 (Kenya)</option>
+            <option value="+251">+251 (Ethiopia)</option>
+            <option value="+233">+233 (Ghana)</option>
+          </select>
+          <div class="input-icon">
+            <i class="fas fa-phone"></i>
+            <input type="tel" id="phone" class="form-input phone-input" placeholder="Enter your phone number" required>
+          </div>
+        </div>
+        <div class="error-message" id="phoneError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Create Password</label>
+        <div class="input-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="password" placeholder="Minimum 8 characters" required minlength="8">
+          <i class="fas fa-eye password-toggle" id="togglePassword" style="left: auto; right: 15px; cursor: pointer;"></i>
+        </div>
+        <div class="password-strength">
+          <div class="strength-meter" id="strengthMeter"></div>
+        </div>
+        <div class="error-message" id="passwordError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="input-icon">
+          <i class="fas fa-lock"></i>
+          <input type="password" id="confirmPassword" placeholder="Re-enter your password" required>
+        </div>
+        <div class="error-message" id="confirmError"></div>
+      </div>
+
+      <div class="form-group">
+        <label for="currency">Preferred Currency</label>
+        <div class="input-icon">
+          <i class="fas fa-money-bill-wave"></i>
+          <select id="currency" class="form-control" required>
+            <option value="">Select currency</option>
+            <option value="USD">US Dollar (USD)</option>
+            <option value="EUR">Euro (EUR)</option>
+            <option value="GBP">British Pound (GBP)</option>
+            <option value="CNY">Chinese Yuan (CNY)</option>
+            <option value="JPY">Japanese Yen (JPY)</option>
+            <option value="INR">Indian Rupee (INR)</option>
+            <option value="KRW">South Korean Won (KRW)</option>
+            <option value="SGD">Singapore Dollar (SGD)</option>
+            <option value="THB">Thai Baht (THB)</option>
+            <option value="VND">Vietnamese Dong (VND)</option>
+            <option value="NGN">Nigerian Naira (NGN)</option>
+            <option value="ZAR">South African Rand (ZAR)</option>
+            <option value="EGP">Egyptian Pound (EGP)</option>
+            <option value="KES">Kenyan Shilling (KES)</option>
+          </select>
+        </div>
+        <div class="error-message" id="currencyError"></div>
+      </div>
+
+      <div class="terms">
+        <input type="checkbox" id="terms" required>
+        <label for="terms">I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a></label>
+      </div>
+
+      <button type="submit">Create Account</button>
+      
+      <div class="security-info">
+        <i class="fas fa-shield-alt"></i>
+        <span>We use bank-level encryption to protect your data. GDPR compliant.</span>
+      </div>
+
+      <p class="login-link">Already have an account? <a href="login.html">Sign in here</a></p>
+    </form>
+  </div>
+
+  <div class="notification" id="notification">
+    <i class="fas fa-check-circle"></i>
+    <span id="notificationMessage">Success!</span>
+  </div>
+
+ <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('registerForm');
+    
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const fullName = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const country = document.getElementById('country').value;
+      const phone = document.getElementById('phone').value.replace(/\D/g, '');
+      const countryCode = document.getElementById('countryCode').value;
+      const password = document.getElementById('password').value;
+      const currency = document.getElementById('currency').value;
+      
+      // Split full name into first and last name
+      const nameParts = fullName.split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ') || 'User';
+      
+      try {
+        // Show loading state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+        submitBtn.disabled = true;
+        
+        const response = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            phone: `${countryCode}${phone}`,
+            country,
+            currency,
+            password
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Registration failed');
+        }
+
+        // Save token to localStorage
+        localStorage.setItem('authToken', data.token);
+
+        showNotification('Registration successful! Redirecting to dashboard...', 'success');
+        
+        // Redirect to dashboard
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 1500);
+      } catch (error) {
+        showNotification(error.message || 'Registration failed. Please try again.', 'error');
+        
+        // Reset button state
+        const submitBtn = form.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+    
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      notification.className = `notification ${type}`;
+      notification.querySelector('#notificationMessage').textContent = message;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 5000);
+    }
+  });
+</script>
+</body>
+</html>

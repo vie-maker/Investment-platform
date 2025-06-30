@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: admin_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=mongodb://mongo:27017/salticsx-admin
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRES_IN=8h
+    depends_on:
+      - mongo
+    networks:
+      - admin-network
+
+  frontend:
+    image: nginx:alpine
+    container_name: admin_frontend
+    ports:
+      - "3000:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+    networks:
+      - admin-network
+
+  mongo:
+    image: mongo:5.0
+    container_name: admin_mongo
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - admin-network
+
+volumes:
+  mongo-data:
+
+networks:
+  admin-network:
+    driver: bridge

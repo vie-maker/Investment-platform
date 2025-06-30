@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Investments | SalticsX Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #D4AF37; /* Gold */
+      --primary-light: #F5E6AB;
+      --primary-dark: #B7950B;
+      --secondary: #2E8B57; /* Green */
+      --secondary-light: #C1E1C1;
+      --secondary-dark: #1E6B47;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #f8f9fa;
+      --dark: #333;
+      --gray: #6c757d;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+    }
+
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .admin-sidebar {
+      width: 250px;
+      background-color: var(--secondary);
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .admin-logo {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--primary);
+      background-color: var(--secondary-dark);
+    }
+
+    .admin-logo img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .admin-logo span {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .admin-menu {
+      padding: 10px 0;
+    }
+
+    .admin-menu-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .admin-menu-item i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .admin-menu-item.active {
+      background-color: var(--primary);
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .admin-menu-item:hover:not(.active) {
+      background-color: var(--secondary-light);
+      color: var(--dark);
+    }
+
+    /* Main Content Styles */
+    .admin-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-header {
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .admin-header h2 {
+      color: var(--secondary-dark);
+      font-size: 1.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .admin-header h2 i {
+      color: var(--primary);
+    }
+
+    .admin-user {
+      display: flex;
+      align-items: center;
+    }
+
+    .admin-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: 600;
+    }
+
+    .admin-content {
+      padding: 25px;
+      flex: 1;
+    }
+
+    /* Investments Dashboard */
+    .investments-dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stats-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 20px;
+      border-top: 4px solid var(--primary);
+    }
+
+    .stats-card.green {
+      border-top-color: var(--secondary);
+    }
+
+    .stats-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .stats-card-title {
+      font-size: 0.9rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    .stats-card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(212, 175, 55, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary);
+    }
+
+    .stats-card.green .stats-card-icon {
+      background-color: rgba(46, 139, 87, 0.1);
+      color: var(--secondary);
+    }
+
+    .stats-card-value {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 5px;
+    }
+
+    .stats-card-change {
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    .positive {
+      color: var(--success);
+    }
+
+    .negative {
+      color: var(--danger);
+    }
+
+    /* Investments Table */
+    .investments-table-container {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 25px;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .table-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--secondary-dark);
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--light);
+      border-radius: 4px;
+      padding: 5px 10px;
+      border: 1px solid var(--primary-light);
+    }
+
+    .search-bar input {
+      border: none;
+      background: transparent;
+      padding: 5px;
+      outline: none;
+      width: 200px;
+    }
+
+    .search-bar i {
+      color: var(--gray);
+    }
+
+    .btn-admin {
+      padding: 8px 15px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      transition: var(--transition);
+      font-size: 0.85rem;
+    }
+
+    .btn-admin-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-admin-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-admin-secondary {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-admin-secondary:hover {
+      background-color: var(--secondary-dark);
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .admin-table th {
+      padding: 12px 15px;
+      text-align: left;
+      background-color: var(--primary-light);
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .admin-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid var(--light);
+      color: var(--dark);
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .admin-table tr:hover {
+      background-color: rgba(212, 175, 55, 0.05);
+    }
+
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .status-active {
+      background-color: rgba(40, 167, 69, 0.1);
+      color: var(--success);
+    }
+
+    .status-pending {
+      background-color: rgba(255, 193, 7, 0.1);
+      color: var(--warning);
+    }
+
+    .status-completed {
+      background-color: rgba(46, 139, 87, 0.1);
+      color: var(--secondary);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 5px;
+    }
+
+    .action-btn {
+      padding: 5px 10px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: var(--transition);
+    }
+
+    .view-btn {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .view-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .edit-btn {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .edit-btn:hover {
+      background-color: var(--secondary-dark);
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 5px;
+    }
+
+    .pagination button {
+      padding: 8px 12px;
+      border: 1px solid var(--primary-light);
+      background: white;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pagination button:hover {
+      background-color: var(--primary-light);
+    }
+
+    .pagination button.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .admin-sidebar {
+        width: 70px;
+      }
+      
+      .admin-logo span, .admin-menu-item span {
+        display: none;
+      }
+      
+      .admin-menu-item {
+        justify-content: center;
+      }
+      
+      .investments-dashboard {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .investments-dashboard {
+        grid-template-columns: 1fr;
+      }
+      
+      .table-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .search-bar input {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .admin-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../assets/images/logo.png" alt="SalticsX">
+        <span>SalticsX Admin</span>
+      </div>
+      
+      <div class="admin-menu">
+        <a href="dashboard.html" class="admin-menu-item">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="users.html" class="admin-menu-item">
+          <i class="fas fa-users"></i>
+          <span>Users</span>
+        </a>
+        <a href="investments.html" class="admin-menu-item active">
+          <i class="fas fa-chart-line"></i>
+          <span>Investments</span>
+        </a>
+        <a href="transactions.html" class="admin-menu-item">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Transactions</span>
+        </a>
+        <a href="withdrawals.html" class="admin-menu-item">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Withdrawals</span>
+        </a>
+        <a href="settings.html" class="admin-menu-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <a href="../index.html" class="admin-menu-item">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Back to Site</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="admin-main">
+      <div class="admin-header">
+        <h2><i class="fas fa-chart-line"></i> Investments</h2>
+        <div class="admin-user">
+          <div class="admin-avatar">A</div>
+          <span>Admin User</span>
+        </div>
+      </div>
+      
+      <div class="admin-content">
+        <!-- Stats Cards -->
+        <div class="investments-dashboard">
+          <div class="stats-card">
+            <div class="stats-card-header">
+              <div class="stats-card-title">Total Investments</div>
+              <div class="stats-card-icon">
+                <i class="fas fa-wallet"></i>
+              </div>
+            </div>
+            <div class="stats-card-value">$245,890</div>
+            <div class="stats-card-change positive">
+              <i class="fas fa-arrow-up"></i> 12.5% from last month
+            </div>
+          </div>
+          
+          <div class="stats-card green">
+            <div class="stats-card-header">
+              <div class="stats-card-title">Active Plans</div>
+              <div class="stats-card-icon">
+                <i class="fas fa-chart-pie"></i>
+              </div>
+            </div>
+            <div class="stats-card-value">1,245</div>
+            <div class="stats-card-change positive">
+              <i class="fas fa-arrow-up"></i> 8.3% from last month
+            </div>
+          </div>
+          
+          <div class="stats-card">
+            <div class="stats-card-header">
+              <div class="stats-card-title">New Investments</div>
+              <div class="stats-card-icon">
+                <i class="fas fa-plus-circle"></i>
+              </div>
+            </div>
+            <div class="stats-card-value">87</div>
+            <div class="stats-card-change negative">
+              <i class="fas fa-arrow-down"></i> 2.1% from last week
+            </div>
+          </div>
+        </div>
+        
+        <!-- Investments Table -->
+        <div class="investments-table-container">
+          <div class="table-header">
+            <div class="table-title">All Investments</div>
+            <div class="table-actions">
+              <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search investments...">
+              </div>
+              <button class="btn-admin btn-admin-primary">
+                <i class="fas fa-plus"></i> Add Investment
+              </button>
+              <button class="btn-admin btn-admin-secondary">
+                <i class="fas fa-filter"></i> Filter
+              </button>
+            </div>
+          </div>
+          
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Plan</th>
+                <th>Amount</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#INV1001</td>
+                <td>John Doe</td>
+                <td>Premium Plan</td>
+                <td>$5,000.00</td>
+                <td>2023-06-01</td>
+                <td>2023-07-31</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view-btn">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#INV1002</td>
+                <td>Jane Smith</td>
+                <td>VIP Plan</td>
+                <td>$15,000.00</td>
+                <td>2023-06-10</td>
+                <td>2023-09-08</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view-btn">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#INV1003</td>
+                <td>Robert Johnson</td>
+                <td>Starter Plan</td>
+                <td>$500.00</td>
+                <td>2023-05-15</td>
+                <td>2023-06-14</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view-btn">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#INV1004</td>
+                <td>Sarah Williams</td>
+                <td>Premium Plan</td>
+                <td>$3,000.00</td>
+                <td>2023-05-20</td>
+                <td>2023-07-19</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view-btn">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>#INV1005</td>
+                <td>Michael Brown</td>
+                <td>VIP Plan</td>
+                <td>$25,000.00</td>
+                <td>2023-06-05</td>
+                <td>2023-09-03</td>
+                <td><span class="status-badge status-active">Active</span></td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="action-btn view-btn">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="action-btn edit-btn">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div class="pagination">
+            <button><i class="fas fa-angle-left"></i></button>
+            <button class="active">1</button>
+            <button>2</button>
+            <button>3</button>
+            <button><i class="fas fa-angle-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="js/admin.js"></script>
+  <script>
+    // Simple search functionality
+    document.querySelector('.search-bar input').addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const rows = document.querySelectorAll('.admin-table tbody tr');
+      
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+    
+    // View button functionality
+    document.querySelectorAll('.view-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const id = row.cells[0].textContent;
+        const user = row.cells[1].textContent;
+        const plan = row.cells[2].textContent;
+        alert(`Viewing investment:\n\nID: ${id}\nUser: ${user}\nPlan: ${plan}`);
+      });
+    });
+    
+    // Edit button functionality
+    document.querySelectorAll('.edit-btn').forEach(button => {
+      button.addEventListener('click', function() {
+        const row = this.closest('tr');
+        const id = row.cells[0].textContent;
+        alert(`Editing investment: ${id}`);
+      });
+    });
+    
+    // Pagination buttons
+    document.querySelectorAll('.pagination button').forEach(button => {
+      button.addEventListener('click', function() {
+        if (!this.classList.contains('active')) {
+          document.querySelector('.pagination button.active').classList.remove('active');
+          this.classList.add('active');
+          // In a real app, this would load the corresponding page of results
+        }
+      });
+    });
+  </script>
+</body>
+</html>

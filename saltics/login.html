@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Investment Platform</title>
+  <style>
+    body {
+      background-color: #0e0e1b;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      color: white;
+    }
+
+    header {
+      background-color: #f4f4f4;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      color: #00b894;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #2d3436;
+      font-weight: bold;
+    }
+
+    nav a:hover {
+      color: #00b894;
+    }
+
+    .login-container {
+      background-color: #1a1a2e;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 400px;
+      margin: 60px auto;
+    }
+
+    .login-container h2 {
+      text-align: center;
+      color: #f9d342;
+      margin-bottom: 25px;
+    }
+
+    form input {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      background: #2a2a40;
+      border: none;
+      border-radius: 5px;
+      color: white;
+    }
+
+    form button {
+      width: 100%;
+      padding: 12px;
+      background: #f9d342;
+      color: #000;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    form button:hover {
+      background: #e6c200;
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+
+    .register-link a {
+      color: #00adb5;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>My Investment Site</h1>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="register.html">Register</a></li>
+        <li><a href="investment_plan.html">Plans</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="login-container">
+    <h2>Login to Your Account</h2>
+    <form id="loginForm">
+      <input type="text" id="username" placeholder="Enter phone number or email" required>
+      <input type="password" id="password" placeholder="Enter your password" required>
+      <button type="submit">Login</button>
+      <p class="register-link">Don't have an account? <a href="register.html">Register here</a></p>
+    </form>
+  </div>
+
+<script>
+  document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: username,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      // Save token to localStorage
+      localStorage.setItem('authToken', data.token);
+
+      // Redirect to dashboard or requested page
+      const urlParams = new URLSearchParams(window.location.search);
+      const redirect = urlParams.get('redirect') || 'dashboard.html';
+      window.location.href = redirect;
+    } catch (error) {
+      alert(error.message || 'Login failed. Please try again.');
+    }
+  });
+</script>
+</body>
+</html>
+

@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdrawals | SalticsX Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #D4AF37; /* Gold */
+      --primary-light: #F5E6AB;
+      --primary-dark: #B7950B;
+      --secondary: #2E8B57; /* Green */
+      --secondary-light: #C1E1C1;
+      --secondary-dark: #1E6B47;
+      --dark: #333;
+      --light: #f8f9fa;
+      --success: #28a745;
+      --danger: #dc3545;
+      --warning: #ffc107;
+      --info: #17a2b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f5f5f5;
+    }
+
+    .admin-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .admin-sidebar {
+      width: 250px;
+      background-color: var(--secondary);
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .admin-logo {
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      border-bottom: 2px solid var(--primary);
+      background-color: var(--secondary-dark);
+    }
+
+    .admin-logo img {
+      width: 40px;
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .admin-logo span {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .admin-menu {
+      padding: 10px 0;
+    }
+
+    .admin-menu-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .admin-menu-item i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .admin-menu-item.active {
+      background-color: var(--primary);
+      color: var(--dark);
+      font-weight: 500;
+    }
+
+    .admin-menu-item:hover:not(.active) {
+      background-color: var(--secondary-light);
+      color: var(--dark);
+    }
+
+    /* Main Content Styles */
+    .admin-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .admin-header {
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-bottom: 2px solid var(--primary-light);
+    }
+
+    .admin-header h2 {
+      color: var(--secondary-dark);
+      font-weight: 600;
+    }
+
+    .admin-user {
+      display: flex;
+      align-items: center;
+    }
+
+    .admin-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 10px;
+      font-weight: 600;
+    }
+
+    .admin-content {
+      padding: 25px;
+      flex: 1;
+    }
+
+    /* Search and Filters */
+    .search-bar {
+      display: flex;
+      margin-bottom: 20px;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 10px 15px;
+      border: 1px solid var(--primary-light);
+      border-radius: 4px 0 0 4px;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .search-bar input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-bar button {
+      padding: 0 15px;
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .search-bar button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .filters {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .filters select, .filters input {
+      padding: 10px 15px;
+      border: 1px solid var(--primary-light);
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .filters select:focus, .filters input:focus {
+      border-color: var(--primary);
+    }
+
+    /* Table Styles */
+    .admin-table {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      margin-bottom: 20px;
+    }
+
+    .admin-table table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .admin-table th {
+      padding: 15px;
+      text-align: left;
+      background-color: var(--primary-light);
+      color: var(--dark);
+      font-weight: 600;
+    }
+
+    .admin-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .admin-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .admin-table tr:nth-child(even) {
+      background-color: rgba(212, 175, 55, 0.05);
+    }
+
+    .admin-table tr:hover {
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+
+    /* Status Badges */
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-block;
+    }
+
+    .status-pending {
+      background-color: #FFF3CD;
+      color: #856404;
+    }
+
+    .status-completed {
+      background-color: #D4EDDA;
+      color: #155724;
+    }
+
+    .status-failed {
+      background-color: #F8D7DA;
+      color: #721C24;
+    }
+
+    /* Buttons */
+    .btn-admin {
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-right: 5px;
+      transition: all 0.3s;
+    }
+
+    .btn-admin-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-admin-primary:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .btn-admin-success {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-admin-success:hover {
+      background-color: var(--secondary-dark);
+    }
+
+    .btn-admin-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-admin-danger:hover {
+      opacity: 0.9;
+    }
+
+    .btn-sm {
+      padding: 4px 8px;
+      font-size: 0.75rem;
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .pagination button {
+      border: 1px solid var(--primary-light);
+      background: white;
+      padding: 8px 12px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .pagination button:hover {
+      background-color: var(--primary-light);
+    }
+
+    .pagination button.active {
+      background-color: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .admin-container {
+        flex-direction: column;
+      }
+      
+      .admin-sidebar {
+        width: 100%;
+      }
+      
+      .filters {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Sidebar -->
+    <div class="admin-sidebar">
+      <div class="admin-logo">
+        <img src="../assets/images/logo.png" alt="SalticsX">
+        <span>SalticsX Admin</span>
+      </div>
+      
+      <div class="admin-menu">
+        <a href="dashboard.html" class="admin-menu-item">
+          <i class="fas fa-tachometer-alt"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="users.html" class="admin-menu-item">
+          <i class="fas fa-users"></i>
+          <span>Users</span>
+        </a>
+        <a href="investments.html" class="admin-menu-item">
+          <i class="fas fa-chart-line"></i>
+          <span>Investments</span>
+        </a>
+        <a href="transactions.html" class="admin-menu-item">
+          <i class="fas fa-exchange-alt"></i>
+          <span>Transactions</span>
+        </a>
+        <a href="withdrawals.html" class="admin-menu-item active">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Withdrawals</span>
+        </a>
+        <a href="settings.html" class="admin-menu-item">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+        <a href="../index.html" class="admin-menu-item">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Back to Site</span>
+        </a>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="admin-main">
+      <div class="admin-header">
+        <h2><i class="fas fa-money-bill-wave" style="margin-right: 10px;"></i>Withdrawals</h2>
+        <div class="admin-user">
+          <div class="admin-avatar">A</div>
+          <span>Admin User</span>
+        </div>
+      </div>
+      
+      <div class="admin-content">
+        <div class="search-bar">
+          <input type="text" id="searchWithdrawals" placeholder="Search withdrawals...">
+          <button id="searchWithdrawalsBtn"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <div class="filters">
+          <select id="withdrawalStatus">
+            <option value="">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="completed">Completed</option>
+            <option value="failed">Failed</option>
+          </select>
+          
+          <input type="date" id="withdrawalDate">
+          
+          <button class="btn-admin btn-admin-primary">
+            <i class="fas fa-filter"></i> Apply Filters
+          </button>
+        </div>
+        
+        <div class="admin-table">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Amount</th>
+                <th>Method</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Reference</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#WDR1001</td>
+                <td>John Doe</td>
+                <td style="color: var(--secondary-dark); font-weight: 500;">$500.00</td>
+                <td>PayPal</td>
+                <td><span class="status-badge status-pending">Pending</span></td>
+                <td>2023-06-10 09:15</td>
+                <td>PAYPAL67890</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary btn-sm"><i class="fas fa-eye"></i></button>
+                  <button class="btn-admin btn-admin-success btn-sm"><i class="fas fa-check"></i></button>
+                  <button class="btn-admin btn-admin-danger btn-sm"><i class="fas fa-times"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td>#WDR1002</td>
+                <td>Jane Smith</td>
+                <td style="color: var(--secondary-dark); font-weight: 500;">$1,200.00</td>
+                <td>Bank Transfer</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>2023-06-09 14:30</td>
+                <td>BANK123456</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary btn-sm"><i class="fas fa-eye"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td>#WDR1003</td>
+                <td>Robert Johnson</td>
+                <td style="color: var(--secondary-dark); font-weight: 500;">$750.00</td>
+                <td>Crypto</td>
+                <td><span class="status-badge status-failed">Failed</span></td>
+                <td>2023-06-08 11:45</td>
+                <td>BTC98765</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary btn-sm"><i class="fas fa-eye"></i></button>
+                  <button class="btn-admin btn-admin-success btn-sm"><i class="fas fa-redo"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td>#WDR1004</td>
+                <td>Sarah Williams</td>
+                <td style="color: var(--secondary-dark); font-weight: 500;">$350.00</td>
+                <td>PayPal</td>
+                <td><span class="status-badge status-pending">Pending</span></td>
+                <td>2023-06-07 16:20</td>
+                <td>PAYPAL54321</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary btn-sm"><i class="fas fa-eye"></i></button>
+                  <button class="btn-admin btn-admin-success btn-sm"><i class="fas fa-check"></i></button>
+                  <button class="btn-admin btn-admin-danger btn-sm"><i class="fas fa-times"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td>#WDR1005</td>
+                <td>Michael Brown</td>
+                <td style="color: var(--secondary-dark); font-weight: 500;">$2,000.00</td>
+                <td>Bank Transfer</td>
+                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>2023-06-06 10:05</td>
+                <td>BANK789012</td>
+                <td>
+                  <button class="btn-admin btn-admin-primary btn-sm"><i class="fas fa-eye"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="pagination">
+          <button><i class="fas fa-angle-left"></i></button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>3</button>
+          <button><i class="fas fa-angle-right"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Simple search functionality
+    document.getElementById('searchWithdrawalsBtn').addEventListener('click', function() {
+      const searchTerm = document.getElementById('searchWithdrawals').value.toLowerCase();
+      const rows = document.querySelectorAll('.admin-table tbody tr');
+      
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+    
+    // Filter by status
+    document.getElementById('withdrawalStatus').addEventListener('change', function() {
+      const status = this.value;
+      const rows = document.querySelectorAll('.admin-table tbody tr');
+      
+      rows.forEach(row => {
+        const rowStatus = row.querySelector('.status-badge').textContent.toLowerCase();
+        if (!status || rowStatus === status) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
