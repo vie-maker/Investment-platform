@@ -1,21 +1,66 @@
+
 const express = require('express');
 const router = express.Router();
-const adminController = require('../controllers/adminController');
-const authController = require('../controllers/authController');
+const { protect, restrictTo } = require('../controllers/authController');
+const {
+  getStats,
+  getAllUsers,
+  getUserById,
+  updateUser,
+  deleteUser,
+  getAllInvestments,
+  getInvestmentById,
+  updateInvestment,
+  deleteInvestment,
+  getAllTransactions,
+  getTransactionById,
+  updateTransaction,
+  deleteTransaction,
+  getAllWithdrawals,
+  updateWithdrawal,
+  deleteWithdrawal
+} = require('../controllers/adminController');
 
 // Protect all routes after this middleware
-router.use(authController.protect);
-router.use(authController.restrictTo('admin', 'superadmin'));
+router.use(protect);
+router.use(restrictTo('admin', 'superadmin'));
 
-// Dashboard routes
-router.get('/dashboard', adminController.getDashboardStats);
+// Dashboard stats
+router.get('/stats', getStats);
 
-// User management routes
-router.get('/users', adminController.getAllUsers);
-router.patch('/users/:userId/status', adminController.updateUserStatus);
+// User management
+router.route('/users')
+  .get(getAllUsers);
 
-// Transaction management routes
-router.get('/transactions', adminController.getAllTransactions);
-router.patch('/transactions/:transactionId/status', adminController.updateTransactionStatus);
+router.route('/users/:id')
+  .get(getUserById)
+  .put(updateUser)
+  .delete(deleteUser);
+
+// Investment management
+router.route('/investments')
+  .get(getAllInvestments);
+
+router.route('/investments/:id')
+  .get(getInvestmentById)
+  .put(updateInvestment)
+  .delete(deleteInvestment);
+
+// Transaction management
+router.route('/transactions')
+  .get(getAllTransactions);
+
+router.route('/transactions/:id')
+  .get(getTransactionById)
+  .put(updateTransaction)
+  .delete(deleteTransaction);
+
+// Withdrawal management
+router.route('/withdrawals')
+  .get(getAllWithdrawals);
+
+router.route('/withdrawals/:id')
+  .put(updateWithdrawal)
+  .delete(deleteWithdrawal);
 
 module.exports = router;

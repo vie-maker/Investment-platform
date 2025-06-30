@@ -12,6 +12,8 @@ dotenv.config();
 // Route files
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const userRoutes = require('./routes/userRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 // Import cron jobs
 require('./utils/dailyProfitCron');
@@ -50,6 +52,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Mount routers
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/admin', adminRoutes);
+app.use('/api/v1/user', userRoutes);
+app.use('/api/v1/payment', paymentRoutes);
 
 // Serve main page
 app.get('/', (req, res) => {
@@ -72,8 +76,16 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err, promise) => {
+  console.log(`Error: ${err.message}`);
+  server.close(() => {
+    process.exit(1);
+  });
 });
 
 module.exports = app;

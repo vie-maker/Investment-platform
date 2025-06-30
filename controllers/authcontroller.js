@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const User = require('../modals/User');
 const AppError = require('../utils/AppError');
 const { promisify } = require('util');
 
@@ -39,7 +40,7 @@ exports.login = async (req, res, next) => {
     // 2) Check if user exists and password is correct
     const user = await User.findOne({ email }).select('+password');
     
-    if (!user || !(await user.comparePassword(password))) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return next(new AppError('Incorrect email or password', 401));
     }
 
