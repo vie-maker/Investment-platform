@@ -20,12 +20,7 @@ const investments = require('./routes/investments');
 const transactions = require('./routes/transactions');
 
 // Connect to DB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  useCreateIndex: true,
-  useFindAndModify: false
-});
+mongoose.connect(process.env.MONGODB_URI);
 
 const app = express();
 
@@ -35,24 +30,13 @@ app.use(express.json());
 // Cookie parser
 app.use(cookieParser());
 
-// Sanitize data
-app.use(mongoSanitize());
-
-// Set security headers
-app.use(helmet());
-
-// Prevent XSS attacks
-app.use(xss());
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 10 * 60 * 1000, // 10 mins
-  max: 100
-});
-app.use(limiter);
-
-// Prevent http param pollution
-app.use(hpp());
+// Apply security middleware
+const security = require('../middleware/security');
+app.use(security.setSecurityHeaders);
+app.use(security.sanitizeData);
+app.use(security.xssProtection);
+app.use(security.preventParamPollution);
+app.use(security.limiter);
 
 // Enable CORS
 app.use(cors());
