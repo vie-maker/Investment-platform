@@ -76,16 +76,9 @@ const InvestmentSchema = new mongoose.Schema({
 });
 
 // Indexes
-InvestmentSchema.index({ userId: 1, status: 1 });
+InvestmentSchema.index({ user: 1, status: 1 });
 InvestmentSchema.index({ status: 1, endDate: 1 });
-
-// Virtual for user reference
-InvestmentSchema.virtual('user', {
-  ref: 'User',
-  localField: 'userId',
-  foreignField: '_id',
-  justOne: true
-});
+InvestmentSchema.index({ status: 1, nextPayoutDate: 1 });
 
 // Virtual for days remaining
 InvestmentSchema.virtual('daysRemaining').get(function() {
@@ -127,7 +120,7 @@ InvestmentSchema.statics.getUserInvestments = function(userId, options = {}) {
   const { page = 1, limit = 10, status } = options;
   const skip = (page - 1) * limit;
 
-  const query = { userId };
+  const query = { user: userId };
   if (status) query.status = status;
 
   return this.find(query)
@@ -140,88 +133,7 @@ InvestmentSchema.statics.getUserInvestments = function(userId, options = {}) {
 // Method to calculate daily profit
 InvestmentSchema.methods.calculateDailyProfit = function() {
   const dailyRate = this.plan.dailyReturn / 100;
-  return this.amount * dailyRate;
+  return Math.round((this.amount * dailyRate) * 100) / 100;
 };
 
 module.exports = mongoose.model('Investment', InvestmentSchema);
-```
-
-```
-InvestmentSchema.index({ userId: 1, status: 1 });
-InvestmentSchema.index({ status: 1, endDate: 1 });
-```
-
-```
-InvestmentSchema.virtual('user', {
-  ref: 'User',
-  localField: 'userId',
-  foreignField: '_id',
-  justOne: true
-});
-```
-
-```
-InvestmentSchema.virtual('daysRemaining').get(function() {
-  if (this.status !== 'active') return 0;
-  const now = new Date();
-  const end = new Date(this.endDate);
-  const diffTime = end - now;
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return Math.max(0, diffDays);
-});
-```
-
-```
-InvestmentSchema.virtual('progressPercentage').get(function() {
-  const now = new Date();
-  const start = new Date(this.startDate);
-  const end = new Date(this.endDate);
-  const totalDuration = end - start;
-  const elapsed = now - start;
-  const percentage = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
-  return Math.round(percentage * 100) / 100;
-});
-```
-
-```
-InvestmentSchema.pre('save', function(next) {
-  if (this.isNew && !this.endDate) {
-    const startDate = this.startDate || new Date();
-    this.endDate = new Date(startDate.getTime() + (this.plan.duration * 24 * 60 * 60 * 1000));
-  }
-  next();
-});
-```
-
-```
-InvestmentSchema.statics.getActiveInvestments = function() {
-  return this.find({ status: 'active' });
-};
-```
-
-```
-InvestmentSchema.statics.getUserInvestments = function(userId, options = {}) {
-  const { page = 1, limit = 10, status } = options;
-  const skip = (page - 1) * limit;
-
-  const query = { userId };
-  if (status) query.status = status;
-
-  return this.find(query)
-    .sort({ createdAt: -1 })
-    .skip(skip)
-    .limit(limit)
-    .populate('user', 'firstName lastName email');
-};
-```
-
-```
-InvestmentSchema.methods.calculateDailyProfit = function() {
-  const dailyRate = this.plan.dailyReturn / 100;
-  return this.amount * dailyRate;
-};
-```
-
-```
-module.exports = mongoose.model('Investment', InvestmentSchema);
-```

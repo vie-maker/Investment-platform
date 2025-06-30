@@ -12,7 +12,7 @@ const calculateDailyProfit = (investment) => {
 // Run every day at 00:01 UTC (midnight)
 const job = cron.schedule('1 0 * * *', async () => {
   try {
-    console.log('Running daily profit calculation...');
+    console.log(`[${new Date().toISOString()}] Running daily profit calculation...`);
 
     const now = new Date();
     const activeInvestments = await Investment.find({
@@ -21,7 +21,7 @@ const job = cron.schedule('1 0 * * *', async () => {
       endDate: { $gte: now }
     }).populate('user', 'balance');
 
-    console.log(`Found ${activeInvestments.length} active investments to process`);
+    console.log(`[${new Date().toISOString()}] Found ${activeInvestments.length} active investments to process`);
 
     for (const investment of activeInvestments) {
       try {

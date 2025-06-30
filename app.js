@@ -9,6 +9,15 @@ const cookieParser = require('cookie-parser');
 // Load env vars
 dotenv.config();
 
+// Validate required environment variables
+const requiredEnvVars = ['MONGODB_URI', 'JWT_SECRET'];
+const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+
+if (missingEnvVars.length > 0) {
+  console.error('Missing required environment variables:', missingEnvVars);
+  process.exit(1);
+}
+
 // Route files
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
@@ -21,7 +30,7 @@ require('./modals/investment');
 require('./modals/Transaction');
 
 // Import cron jobs
-require('./utils/dailyProfitCron');
+const { job } = require('./utils/dailyProfitCron');
 
 // Connect to DB
 mongoose.connect(process.env.MONGODB_URI)
@@ -83,6 +92,8 @@ const PORT = process.env.PORT || 5000;
 
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  console.log(`Database connected: ${mongoose.connection.readyState === 1 ? 'Yes' : 'No'}`);
+  console.log(`Daily profit cron job status: ${job ? 'Active' : 'Inactive'}`);
 });
 
 // Handle unhandled promise rejections
