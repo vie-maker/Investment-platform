@@ -2,9 +2,6 @@
 const User = require('../modals/User');
 const Investment = require('../modals/investment');
 const Transaction = require('../modals/Transaction');
-const User = require('../modals/User');
-const Investment = require('../modals/investment');
-const Transaction = require('../modals/Transaction');
 const AppError = require('../utils/AppError');
 
 exports.getProfile = async (req, res, next) => {
