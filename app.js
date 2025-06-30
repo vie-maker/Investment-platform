@@ -13,6 +13,9 @@ dotenv.config();
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 
+// Import cron jobs
+require('./utils/dailyProfitCron');
+
 // Connect to DB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB Connected'))

@@ -1,9 +1,57 @@
 const cron = require('node-cron');
-const Investment = require('../models/Investment');
-const User = require('../models/User');
-const Transaction = require('../models/Transaction');
+const Investment = require('../modals/investment');
+const User = require('../modals/User');
+const Transaction = require('../modals/Transaction');
+
+// Calculate daily profit for an investment
+const calculateDailyProfit = (investment) => {
+  const dailyRate = investment.plan.dailyReturn / 100;
+  return investment.amount * dailyRate;
+};
 
 // Run every day at 00:01 UTC (midnight)
+cron.schedule('1 0 * * *', async () => {
+  try {
+    console.log('Running daily profit calculation...');
+    
+    const activeInvestments = await Investment.find({ status: 'active' });
+    
+    for (const investment of activeInvestments) {
+      const profit = calculateDailyProfit(investment);
+      
+      // Create profit transaction
+      const transaction = new Transaction({
+        userId: investment.userId,
+        type: 'profit',
+        amount: profit,
+        status: 'completed',
+        reference: `PROFIT-${investment._id}-${new Date().toISOString()}`
+      });
+      await transaction.save();
+      
+      // Update user balance
+      await User.findByIdAndUpdate(investment.userId, {
+        $inc: { balance: profit }
+      });
+      
+      // Update investment
+      investment.totalEarned += profit;
+      
+      // Check if investment has completed
+      if (new Date() >= investment.endDate) {
+        investment.status = 'completed';
+      }
+      
+      await investment.save();
+    }
+    
+    console.log(`Processed ${activeInvestments.length} investments`);
+  } catch (error) {
+    console.error('Error in daily profit calculation:', error);
+  }
+});
+
+console.log('Daily profit cron job initialized');
 const job = cron.schedule('1 0 * * *', async () => {
   console.log('Starting daily profit calculation...');
   
