@@ -1,5 +1,6 @@
-const User = require('../models/User');
-const Transaction = require('../models/Transaction');
+const User = require('../modals/User');
+const Transaction = require('../modals/Transaction');
+const Investment = require('../modals/investment');
 const AppError = require('../utils/AppError');
 const APIFeatures = require('../utils/apiFeatures');
 

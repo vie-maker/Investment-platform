@@ -1,7 +1,7 @@
 const paypal = require('@paypal/checkout-server-sdk');
-const Investment = require('../models/Investment');
-const Transaction = require('../models/Transaction');
-const User = require('../models/User');
+const Investment = require('../modals/investment');
+const Transaction = require('../modals/Transaction');
+const User = require('../modals/User');
 
 // Set up PayPal environment
 function environment() {

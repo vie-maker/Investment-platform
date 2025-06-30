@@ -5,4 +5,16 @@ run = "npx serve ."
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "npx serve ."]
+run = ["sh", "-c", "node app.js"]
+
+[workflows]
+runButton = "Production Server"
+
+[[workflows.workflow]]
+name = "Production Server"
+author = 44416512
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "node app.js"

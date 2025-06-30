@@ -1,6 +1,7 @@
-const Investment = require('../models/Investment');
+const Investment = require('../modals/investment');
+const Transaction = require('../modals/Transaction');
+const User = require('../modals/User');
 const Plan = require('../models/Plan');
-const Transaction = require('../models/Transaction');
 const asyncHandler = require('express-async-handler');
 const calculateDailyProfit = require('../utils/calculateProfit');
 

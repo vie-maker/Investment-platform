@@ -46,24 +46,23 @@ const job = cron.schedule('1 0 * * *', async () => {
         // Check if investment has completed
         if (now >= investment.endDate) {
           investment.status = 'completed';
-          investment.nextPayoutDate = null;
         }
-        
+
         await investment.save();
-        
-        console.log(`Processed $${roundedProfit} profit for investment ${investment._id}`);
-      } catch (err) {
-        console.error(`Error processing investment ${investment._id}:`, err);
+
+        console.log(`Processed investment ${investment._id} - Profit: $${roundedProfit}`);
+      } catch (error) {
+        console.error(`Error processing investment ${investment._id}:`, error);
       }
     }
-    
+
     console.log('Daily profit calculation completed');
-  } catch (err) {
-    console.error('Error in daily profit cron job:', err);
+  } catch (error) {
+    console.error('Error in daily profit calculation:', error);
   }
 }, {
-  scheduled: true,
-  timezone: 'UTC'
+  scheduled: false,
+  timezone: "UTC"
 });
 
-module.exports = job;
+module.exports = { job };
