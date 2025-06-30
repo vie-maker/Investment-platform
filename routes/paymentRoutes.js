@@ -3,18 +3,22 @@ const express = require('express');
 const router = express.Router();
 const { protect } = require('../controllers/authController');
 const {
-  createPayment,
-  executePayment,
-  cancelPayment,
-  getPaymentStatus
+  createPayPalOrder,
+  capturePayPalOrder
 } = require('../controllers/paymentController');
 
-// Protect all routes
 router.use(protect);
 
-router.post('/create', createPayment);
-router.post('/execute', executePayment);
-router.post('/cancel', cancelPayment);
-router.get('/status/:paymentId', getPaymentStatus);
+router.post('/create', createPayPalOrder);
+router.post('/execute', capturePayPalOrder);
+
+// Optional placeholders for now
+router.post('/cancel', (req, res) => {
+  res.status(200).json({ message: "Cancel payment (placeholder)" });
+});
+router.get('/status/:paymentId', (req, res) => {
+  res.status(200).json({ message: `Status for ${req.params.paymentId}` });
+});
 
 module.exports = router;
+

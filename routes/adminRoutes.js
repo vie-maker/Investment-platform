@@ -1,7 +1,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { protect, restrictTo } = require('../controllers/authController');
+const { protect, restrictTo } = require('../middleware/authMiddleware');
+
 const {
   getStats,
   getAllUsers,
