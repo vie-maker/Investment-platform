@@ -1,136 +1,137 @@
-const User = require('../models/User');
-const asyncHandler = require('express-async-handler');
 
-// @desc    Get user profile
-// @route   GET /api/users/:id
-// @access  Private
-const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id)
-    .select('-password -verificationToken');
-  
-  if (user) {
-    res.json(user);
-  } else {
-    res.status(404);
-    throw new Error('User not found');
-  }
-});
+const User = require('../modals/User');
+const Investment = require('../modals/investment');
+const Transaction = require('../modals/Transaction');
+const AppError = require('../utils/AppError');
 
-// @desc    Update user profile
-// @route   PUT /api/users/:id
-// @access  Private
-const updateUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  
-  if (user) {
-    user.firstName = req.body.firstName || user.firstName;
-    user.lastName = req.body.lastName || user.lastName;
-    user.email = req.body.email || user.email;
-    user.country = req.body.country || user.country;
-    
-    if (req.body.password) {
-      user.password = req.body.password;
-    }
-    
-    const updatedUser = await user.save();
-    
-    res.json({
-      _id: updatedUser._id,
-      firstName: updatedUser.firstName,
-      lastName: updatedUser.lastName,
-      email: updatedUser.email,
-      country: updatedUser.country,
-      balance: updatedUser.balance,
-      isVerified: updatedUser.isVerified,
-      kycSubmitted: updatedUser.kycSubmitted
+exports.getProfile = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select('-password');
+    res.status(200).json({
+      status: 'success',
+      data: { user }
     });
-  } else {
-    res.status(404);
-    throw new Error('User not found');
+  } catch (error) {
+    next(error);
   }
-});
+};
 
-// @desc    Submit KYC documents
-// @route   POST /api/users/kyc
-// @access  Private
-const submitKYC = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
-  
-  if (user) {
-    user.kycDocuments = {
-      idFront: req.body.idFront,
-      idBack: req.body.idBack,
-      selfie: req.body.selfie
-    };
-    user.kycSubmitted = true;
+exports.updateProfile = async (req, res, next) => {
+  try {
+    const { firstName, lastName, phone } = req.body;
     
-    await user.save();
-    res.json({ message: 'KYC documents submitted successfully' });
-  } else {
-    res.status(404);
-    throw new Error('User not found');
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { firstName, lastName, phone },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    res.status(200).json({
+      status: 'success',
+      data: { user }
+    });
+  } catch (error) {
+    next(error);
   }
-});
+};
 
-// @desc    Get user dashboard stats
-// @route   GET /api/users/stats
-// @access  Private
-const getUserStats = asyncHandler(async (req, res) => {
-  const stats = await User.aggregate([
-    { $match: { _id: req.user._id } },
-    { $lookup: {
-        from: 'investments',
-        localField: '_id',
-        foreignField: 'userId',
-        as: 'investments'
-      }
-    },
-    { $lookup: {
-        from: 'transactions',
-        localField: '_id',
-        foreignField: 'userId',
-        as: 'transactions'
-      }
-    },
-    { $project: {
-        totalInvested: { $sum: '$investments.amount' },
-        activeInvestments: { 
-          $size: { 
-            $filter: {
-              input: '$investments',
-              as: 'investment',
-              cond: { $eq: ['$$investment.status', 'active'] }
-            }
-          }
-        },
-        totalEarnings: {
-          $sum: {
-            $filter: {
-              input: '$transactions',
-              as: 'transaction',
-              cond: { $eq: ['$$transaction.type', 'profit'] }
-            }
-          }
-        },
-        referralEarnings: {
-          $sum: {
-            $filter: {
-              input: '$transactions',
-              as: 'transaction',
-              cond: { $eq: ['$$transaction.type', 'referral'] }
-            }
-          }
-        }
-      }
+exports.getInvestments = async (req, res, next) => {
+  try {
+    const investments = await Investment.find({ user: req.user._id });
+    res.status(200).json({
+      status: 'success',
+      results: investments.length,
+      data: { investments }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.createInvestment = async (req, res, next) => {
+  try {
+    const { plan, amount } = req.body;
+    
+    // Check if user has sufficient balance
+    if (req.user.balance < amount) {
+      return next(new AppError('Insufficient balance', 400));
     }
-  ]);
-  
-  res.json(stats[0]);
-});
 
-module.exports = {
-  getUserProfile,
-  updateUserProfile,
-  submitKYC,
-  getUserStats
+    const investment = await Investment.create({
+      user: req.user._id,
+      plan,
+      amount,
+      dailyPercent: plan.dailyReturn,
+      duration: plan.duration,
+      startDate: new Date(),
+      endDate: new Date(Date.now() + plan.duration * 24 * 60 * 60 * 1000),
+      nextPayoutDate: new Date(Date.now() + 24 * 60 * 60 * 1000)
+    });
+
+    // Deduct amount from user balance
+    await User.findByIdAndUpdate(req.user._id, {
+      $inc: { balance: -amount }
+    });
+
+    res.status(201).json({
+      status: 'success',
+      data: { investment }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getTransactions = async (req, res, next) => {
+  try {
+    const transactions = await Transaction.find({ user: req.user._id })
+      .sort({ createdAt: -1 });
+    
+    res.status(200).json({
+      status: 'success',
+      results: transactions.length,
+      data: { transactions }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getBalance = async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user._id).select('balance');
+    res.status(200).json({
+      status: 'success',
+      data: { balance: user.balance }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.requestWithdrawal = async (req, res, next) => {
+  try {
+    const { amount, method, details } = req.body;
+    
+    if (req.user.balance < amount) {
+      return next(new AppError('Insufficient balance', 400));
+    }
+
+    const transaction = await Transaction.create({
+      user: req.user._id,
+      type: 'withdrawal',
+      amount,
+      method,
+      status: 'pending',
+      details,
+      reference: `WD-${Date.now()}`
+    });
+
+    res.status(201).json({
+      status: 'success',
+      data: { transaction }
+    });
+  } catch (error) {
+    next(error);
+  }
 };

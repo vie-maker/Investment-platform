@@ -15,6 +15,11 @@ const adminRoutes = require('./routes/adminRoutes');
 const userRoutes = require('./routes/userRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 
+// Import models to ensure they're registered
+require('./modals/User');
+require('./modals/investment');
+require('./modals/Transaction');
+
 // Import cron jobs
 require('./utils/dailyProfitCron');
 

@@ -1,33 +1,26 @@
 
 const express = require('express');
 const router = express.Router();
-const { verifyToken } = require('../controllers/authController');
+const { protect } = require('../controllers/authController');
 const {
   getProfile,
   updateProfile,
   getInvestments,
   createInvestment,
   getTransactions,
-  createWithdrawal,
-  getWithdrawals
+  getBalance,
+  requestWithdrawal
 } = require('../controllers/userController');
 
-// Protect all routes
-router.use(verifyToken);
+// Protect all routes after this middleware
+router.use(protect);
 
-// Profile routes
 router.get('/profile', getProfile);
-router.put('/profile', updateProfile);
-
-// Investment routes
+router.patch('/profile', updateProfile);
 router.get('/investments', getInvestments);
 router.post('/investments', createInvestment);
-
-// Transaction routes
 router.get('/transactions', getTransactions);
-
-// Withdrawal routes
-router.get('/withdrawals', getWithdrawals);
-router.post('/withdrawals', createWithdrawal);
+router.get('/balance', getBalance);
+router.post('/withdraw', requestWithdrawal);
 
 module.exports = router;
