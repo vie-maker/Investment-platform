@@ -19,6 +19,7 @@ const UserSchema = new mongoose.Schema({
   lastName: { type: String, required: true },
   phone: { type: String },
   country: { type: String },
+  balance: { type: Number, default: 0 },
   status: { 
     type: String, 
     enum: ['active', 'inactive', 'suspended', 'pending'], 
