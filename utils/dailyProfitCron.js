@@ -5,7 +5,7 @@ const Transaction = require('../modals/Transaction');
 
 // Calculate daily profit for an investment
 const calculateDailyProfit = (investment) => {
-  const dailyRate = investment.dailyPercent / 100;
+  const dailyRate = investment.plan.dailyReturn / 100;
   return Math.round((investment.amount * dailyRate) * 100) / 100;
 };
 

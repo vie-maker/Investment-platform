@@ -57,6 +57,12 @@ const InvestmentSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
+  nextPayoutDate: {
+    type: Date,
+    default: function() {
+      return new Date(Date.now() + 24 * 60 * 60 * 1000); // Next day
+    }
+  },
   paymentReference: String,
   paymentStatus: {
     type: String,
