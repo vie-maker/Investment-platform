@@ -136,6 +136,19 @@ exports.login = async (req, res, next) => {
   }
 };
 
+// Logout user
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  });
+  
+  res.status(200).json({
+    success: true,
+    message: 'Logged out successfully'
+  });
+};
+
 // Verify token middleware
 exports.verifyToken = async (req, res, next) => {
   try {
@@ -174,6 +187,9 @@ exports.verifyToken = async (req, res, next) => {
     });
   }
 };
+
+// Protect middleware (alias for verifyToken for consistency)
+exports.protect = exports.verifyToken;
 
 // Verify email
 exports.verifyEmail = async (req, res) => {
